@@ -40,8 +40,8 @@
 	
 	<select id="ptTotal" resultType="int" parameterType="String">
 		SELECT IFNULL((sum(pt_plus)-sum(pt_minus)),0) AS pt_total
-    	FROM point_detail
-    	WHERE m_id=#{s_m_id}  
+	    FROM point_detail
+	    WHERE m_id=#{s_m_id}
 	</select>
 	
 	

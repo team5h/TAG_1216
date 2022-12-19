@@ -2,14 +2,18 @@ package kr.co.itwill.concert;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.websocket.Session;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -205,21 +209,79 @@ public class ConcertCont {
 	
 //  [콘서트 상세] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
 	@RequestMapping("/concert/{c_no}")
-	public ModelAndView concertDetail(@PathVariable String c_no) {
+	public ModelAndView concertDetail(@PathVariable String c_no, HttpSession session) {
 		//System.out.println("11111111" );
 		//System.out.println("earlybirdCheck" + concertDao.earlybirdCheck(c_no));
 		
 		ModelAndView mav = new ModelAndView();
+		
+		String m_id = (String) session.getAttribute("s_m_id");
+		
+		
 		mav.setViewName("concert/concertDetail");
+		//System.out.println(concertDao.detailConcert(c_no));
 		mav.addObject("concert", concertDao.detailConcert(c_no));
 		mav.addObject("earlybird", concertDao.earlybirdCheck(c_no));
 		mav.addObject("flagnumList", concertDao.getFlagnum(c_no));
 		
+		mav.addObject("likechk", concertDao.likechk(m_id, c_no));
+		
+		//System.out.println(concertDao.likechk(m_id, c_no));
 		return mav;
 	}//concertDetail() end
 	
 	
-
+	
+// [공연 상세 좋아요 증가] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
+	@RequestMapping("/concert/likecntInc")
+	@ResponseBody
+	private int likecntInc(@RequestParam int c_no) throws Exception {
+		
+		
+		ConcertDTO concert = new ConcertDTO();
+		concert.setC_no(c_no);
+		
+		//System.out.println("DTO concert 값" + concertDao.likecntUpdate(concert));
+		return concertDao.likecntInc(concert);
+		
+	}//likecntInsert end
+	
+	
+// [공연 상세 좋아요 마이페이지에 insert] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //	
+	@RequestMapping("/concert/myLikeInsert")
+	@ResponseBody
+	private int myLikeInsert(@RequestParam Map<String, String> map) {
+		//System.out.println("되는감 ?" + concertDao.myLikeInsert(map));
+		
+		
+		return concertDao.myLikeInsert(map);	
+	}//myLikeInsert() end
+	
+	
+// [공연 상세 좋아요 감소] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
+	@RequestMapping("/concert/likecntDec")
+	@ResponseBody
+	private int likecntDec(@RequestParam int c_no) throws Exception {
+		
+		
+		ConcertDTO concert = new ConcertDTO();
+		concert.setC_no(c_no);
+		
+		//System.out.println("DTO concert 값" + concertDao.likecntUpdate(concert));
+		return concertDao.likecntDec(concert);
+		
+	}//likecntInsert end	
+	
+	
+// [공연 상세 좋아요 마이페이지에 Delete] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //	
+	@RequestMapping("/concert/myLikeDelete")
+	@ResponseBody
+	private int myLikeDelete(@RequestParam Map<String, String> map) {
+		//System.out.println("되는감 ?" + concertDao.myLikeDelete(lno));
+		
+		
+		return concertDao.myLikeDelete(map);	
+	}//myLikeInsert() end	
 	
 	
 }// class end
