@@ -135,11 +135,56 @@
 		WHERE rnum between 1 and 3;
 	</select> 	
 
+<!-- 디테일 -->
+	<select id="proDetail" resultType="java.util.Map" parameterType="int">
+		SELECT pro_no, p.c_no, pro_name, stock, color, size, p.price, p.edit, p.postername, title
+		FROM product p JOIN concert c ON p.c_no = c.c_no
+		WHERE pro_no = #{pro_no}
+	</select>
 	
+	<select id="pro_qnacnt" resultType="int" parameterType="int">
+		SELECT count(q_no)
+		FROM qna
+		WHERE pro_no = #{pro_no}
+	</select>
 	
+	<insert id="qnainsert" parameterType="kr.co.itwill.QnA.QnADTO">
+		INSERT INTO qna (qname, subject, pro_no, edit, passwd, regdate, a_stus)
+		VALUES (#{qname},#{subject},#{pro_no},#{edit},#{passwd}, (current_timestamp), 'N')
+	</insert>
+	
+	<select id="qnalist" resultType="kr.co.itwill.QnA.QnADTO" parameterType="int">
+		SELECT *
+		FROM qna
+		WHERE pro_no = #{pro_no}
+	</select>
+	
+	<select id="qnadetail" parameterType="java.util.Map" resultType="kr.co.itwill.QnA.QnADTO">
+		SELECT q.q_no as q_no, subject, edit, passwd, content, a.regdate as regdate 
+		FROM qna q left outer join answer a on q.q_no = a.q_no
+		WHERE q.q_no = #{q_no} and passwd = #{passwd}
+	</select>
+	
+	<insert id="addcart" parameterType="java.util.Map">
+		INSERT INTO product_cart  (m_id, pro_no, cnt)
+		VALUES (#{m_id}, #{pro_no}, #{cnt})
+	</insert>
+	
+	<insert id="like" parameterType="java.util.Map">
+		INSERT INTO member_like(m_id, like_cd,like_li)
+		VALUES (#{m_id},'P',#{pro_no})
+	</insert>
 
+	<delete id="unlike" parameterType="java.util.Map">
+		DELETE FROM member_like
+		WHERE m_id = #{m_id} AND like_li = #{pro_no}
+	</delete>
 	
-	
+	<select id="likechk" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(lno) 
+		FROM member_like
+		WHERE m_id = #{m_id} AND like_li = #{pro_no} AND like_cd = 'P'
+	</select>
 
 
 </mapper>

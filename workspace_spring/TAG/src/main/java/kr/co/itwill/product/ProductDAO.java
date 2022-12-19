@@ -2,11 +2,13 @@ package kr.co.itwill.product;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.co.itwill.QnA.QnADTO;
 import kr.co.itwill.concert.ConcertDTO;
 
 
@@ -93,7 +95,65 @@ public class ProductDAO {
 	}//search() end
 	
 	
+	public Map<String, Object> proDetail(int pro_no){
+		return sqlSession.selectOne("product.proDetail",pro_no);
+	}
 	
+	public int pro_qnacnt (int pro_no) {
+		return sqlSession.selectOne("product.pro_qnacnt",pro_no);
+	}
 	
+	public int qnainsert (QnADTO dto) {
+		return sqlSession.insert("product.qnainsert", dto);
+	}
 	
+	public QnADTO qnadetail (int q_no, int passwd) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("q_no", q_no);
+		map.put("passwd", passwd);
+		
+		return sqlSession.selectOne("product.qnadetail",map);
+	}
+	
+	public List<QnADTO> qnalist (int pro_no) {
+		return sqlSession.selectList("product.qnalist",pro_no);
+	}
+	
+	public int addcart (int cnt, int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("cnt", cnt);
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.insert("product.addcart",map); 
+	}
+	
+	public int like (int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.insert("product.like",map);
+	}//end
+	
+	public int unlike (int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.delete("product.unlike",map);
+	}//end
+	
+	public int likechk (String m_id, int pro_no) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.selectOne("product.likechk", map); 
+	}// end
 }//class end

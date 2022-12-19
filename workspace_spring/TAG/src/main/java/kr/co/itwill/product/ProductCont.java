@@ -1,16 +1,24 @@
-package kr.co.itwill.product;
+ package kr.co.itwill.product;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import kr.co.itwill.QnA.QnADTO;
 
 @Controller
 public class ProductCont {
@@ -192,18 +200,76 @@ public class ProductCont {
 	    return mav;
 	}//search() end	
 	
+//  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
 
-	@RequestMapping("/product")
-	//@RequestMapping("/product/{pro_no}")
-	public ModelAndView productdetail() {
+	
+	@RequestMapping("/product/{pro_no}")
+	public ModelAndView productdetail(@PathVariable int pro_no, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		
+		String m_id = (String)session.getAttribute("s_m_id");
+		
 		mav.setViewName("/product/detail");
+		//System.out.println(pro_no);
+		mav.addObject("proDetail", productDao.proDetail(pro_no));
+		mav.addObject("pro_qnacnt",productDao.pro_qnacnt(pro_no));
+		mav.addObject("qnalist",productDao.qnalist(pro_no));
+		
+		if(!(m_id == null)) {
+			mav.addObject("likechk", productDao.likechk(m_id, pro_no));
+		} 
 		
 		return mav;
 	}// end
-
 	
+	@ResponseBody
+	@RequestMapping(value = "/product/qnainsert", method = RequestMethod.POST)
+	public int qnainsert(@ModelAttribute QnADTO dto) {
+		return productDao.qnainsert(dto);
+	}//end
+	
+	@ResponseBody
+	@RequestMapping(value = "/product/qnadetail", method = RequestMethod.POST)
+	public Map<String, Object> qnadetail(@RequestParam int q_no, @RequestParam int passwd) {		
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		QnADTO dto = productDao.qnadetail(q_no, passwd); 
+
+		map.put("subject", dto.getSubject());
+		map.put("edit", dto.getEdit());
+		map.put("content", dto.getContent());
+		map.put("regdate", dto.getRegdate());
+		
+		return map;
+	}//end
+	
+	@ResponseBody
+	@RequestMapping(value = "/product/addcart", method = RequestMethod.POST)
+	public int addcart(@RequestParam int cnt, @RequestParam int pro_no, @RequestParam String m_id) {
+		return productDao.addcart(cnt, pro_no, m_id);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/product/like", method = RequestMethod.POST)
+	public int like(@RequestParam int pro_no, @RequestParam String m_id) {
+		return productDao.like(pro_no, m_id);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/product/unlike", method = RequestMethod.POST)
+	public int unlike(@RequestParam int pro_no, @RequestParam String m_id) {
+		return productDao.unlike(pro_no, m_id);
+	}	
+	
+	//order - payment
+	
+	@RequestMapping("/product/order")
+	public ModelAndView order(){
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/product/order");
+		
+		return mav;
+	}
 	
 }//class end
 
