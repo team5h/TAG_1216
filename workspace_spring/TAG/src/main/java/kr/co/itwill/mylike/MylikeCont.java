@@ -38,6 +38,8 @@ public class MylikeCont {
 		//String s_m_id="daseul";//소스 취합할때 이 줄 삭제하고, 위줄에 있는 거로 해야 함
 		
 		
+		
+		
 		ModelAndView mav=new ModelAndView();
 		mav.setViewName("mypage/mylike");
 		

@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.co.itwill.mylike.MylikeDTO;
 import kr.co.itwill.product.ProductDTO;
 
 @Repository
@@ -80,10 +81,52 @@ public class ConcertDAO {
 		return sqlSession.selectOne("concert.detailConcert", c_no);
 	}//detail() end
 	
-	
+
 // ---------------------------------------------------- [오늘이 선결제 예매일인지 ?]	
 	public int earlybirdCheck(String c_no) {
 		//System.out.println("22222222");
 		return sqlSession.selectOne("concert.earlybirdCheck", c_no);
 	}//earlybirdCheck() end
+	
+	
+// ---------------------------------------------------- [공연상세 좋아요 개수 증가]	
+	public int likecntInc(ConcertDTO c_no) {
+		//System.out.println("DAO 잘 들어옴.");
+		return sqlSession.update("concert.likecntInc", c_no);
+	}//likecntUpdate() end
+	
+
+// ---------------------------------------------------- [공연상세 나의 좋아요 개수 증가]	
+	public int likechk (String m_id, String c_no) {
+	      Map<String, Object> map = new HashMap<>();
+	      
+	      map.put("c_no", c_no);
+	      map.put("m_id", m_id);
+	      
+	      return sqlSession.selectOne("concert.likechk", map); 
+	   }// end
+
+	
+	
+// ---------------------------------------------------- [나의 상품(마이페이지에) 좋아요 insert]		
+	public int myLikeInsert(Map<String, String> map){
+		//System.out.println("도착완?");
+		return sqlSession.insert("concert.myLikeInsert", map);
+	}//myLikeInsert() end
+	
+	
+// ---------------------------------------------------- [공연상세 좋아요 개수 감소]	
+	public int likecntDec(ConcertDTO c_no) {
+		//System.out.println("DAO 잘 들어옴.");
+		return sqlSession.update("concert.likecntDec", c_no);
+	}//likecntUpdate() end
+	
+	
+// ---------------------------------------------------- [나의 상품(마이페이지에) 좋아요 삭제]		
+	public int myLikeDelete(Map<String, String> map) {
+		return sqlSession.delete("concert.myLikeDelete", map);
+	}//myLikeDelete() end
+	
+	
+	
 }//class end

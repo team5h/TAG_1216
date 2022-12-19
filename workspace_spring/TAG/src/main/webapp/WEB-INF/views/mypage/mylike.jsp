@@ -156,7 +156,7 @@
 						</c:otherwise>
 					</c:choose>
 					<div id="concert_name">
-						<a href="#">PREP LIVE IN SEOUL</a>
+						<a href="#">${row.title}</a>
 					</div>
 				</td>
 				<!-- 테이블 한줄에 3칸씩 -->
