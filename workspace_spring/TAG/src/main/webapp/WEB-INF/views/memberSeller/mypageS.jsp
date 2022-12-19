@@ -9,7 +9,7 @@
 	<h1 class="saem_title"> <a href="/mypageS" style="color:black" class="saem_title"> MY PAGE </a> </h1>
 <br> 
 
-<div class="float" style="width: 100%; height: 100%; flex: 1;">
+<div class="float" style="width: 100%; height: 100%; flex: 1 1 1px; ">
 <div class="leftcontent" style="float:left; width:15%; margin-right:5%;">
 	<div class="stickyP" style="height: 100%;">
 			<p style="font-size: 20px; font-weight: 500;" class="fontG">

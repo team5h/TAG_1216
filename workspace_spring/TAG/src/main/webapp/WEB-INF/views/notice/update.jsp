@@ -16,6 +16,7 @@
    }
 </style>
 
+
 <script>
 	function notice_updateProc(){
 		if(confirm("수정하시겠습니까?")){
@@ -25,7 +26,9 @@
 	}//notice_update() end
 </script>
 
+
 <!-- 본문 시작 -->
+
 
 <h3 style="text-align: center;">수정하기</h3>
 <br>

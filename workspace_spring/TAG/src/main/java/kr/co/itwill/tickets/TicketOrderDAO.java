@@ -38,6 +38,11 @@ public class TicketOrderDAO {
 		return sqlSession.insert("ticketDetail.addDetail2", insertList);
 	}//addDetail() end
 	
+	// 티켓 주문 상세내역서 mappers insert DB저장용
+	public int addDetailTest(List<TicketDetailDTO> insertList) {
+		return sqlSession.insert("ticketDetail.addDetailTest", insertList);
+	}//addDetail() end
+	
 	// 쿠폰내역 mappers
 	public int addCoupon(CouponDTO dto) {
 		return sqlSession.insert("coupon.add", dto);

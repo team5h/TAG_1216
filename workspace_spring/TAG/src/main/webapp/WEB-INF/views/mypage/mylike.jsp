@@ -156,7 +156,9 @@
 						</c:otherwise>
 					</c:choose>
 					<div id="concert_name">
+
 						<a href="/concert/${row.like_li}">${row.title}</a>
+
 					</div>
 				</td>
 				<!-- 테이블 한줄에 3칸씩 -->

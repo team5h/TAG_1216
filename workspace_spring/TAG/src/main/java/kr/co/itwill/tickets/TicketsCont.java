@@ -68,21 +68,18 @@ public class TicketsCont {
 	TicketOrderDAO ticketOrderDao;
 	
 	@RequestMapping(value="/insert.do", method = RequestMethod.POST)
-	public ModelAndView submitTest(	  @ModelAttribute TicketOrderDTO orderDto
+	public ModelAndView submit(	  @ModelAttribute TicketOrderDTO orderDto
 									//, @ModelAttribute TicketDetailDTO detailDto
 									, HttpServletRequest req
 									//, @RequestParam Map<String, Object> map
 									, HttpSession session
 									){
 		
-		//선예매 여부 받아오기
-		int testEarlybird= Integer.parseInt(req.getParameter("earlybird"));
-		//System.out.println("testEarlybird : "+testEarlybird); //0:선예매x 1:선예매o
 		
 		//mav생성
 		ModelAndView mav=new ModelAndView();
 		
-		//Session 아이디 저장
+		//Session 아이디 확인
 		String s_m_id=(String)session.getAttribute("s_m_id");
 		if(s_m_id!=null) { //session아이디를 불러왔다면
 			orderDto.setM_id(s_m_id);
@@ -90,7 +87,7 @@ public class TicketsCont {
 		}else {
 			//orderDto.setM_id("아이디없음");
 			//System.out.println("s_m_id없음 : "+s_m_id);
-			mav.setViewName("/login/loginForm");
+			mav.setViewName("/loginForm");
 			return mav;
 		}//if end
 		
@@ -123,11 +120,21 @@ public class TicketsCont {
 		
 		CouponDTO coupDto=new CouponDTO();
 		coupDto.setM_id(orderDto.getM_id());
-		coupDto.setCoupon("Bc");
 		coupDto.setIssue_date(formatedIssueDate);
 		coupDto.setExp_date(formatedExpDate);
 		coupDto.setC_no(orderDto.getC_no());
 		
+		//선예매 여부 받아오기
+		int earlybird= Integer.parseInt(req.getParameter("earlybird"));
+		System.out.println("testEarlybird : "+earlybird); //0:선예매x 1:선예매o
+		/* 얼리버드 강선님적용후 가져오기
+		if(earlybird == 0) {
+			coupDto.setCoupon("Bc"); //일반예매 할인
+		}else if(earlybird == 1) {
+			coupDto.setCoupon("EBc"); //얼리버드 할인
+		}//if end
+		*/
+		coupDto.setCoupon("Bc"); //얼리버드 할인
 		
 		int cnt3 = ticketOrderDao.addCoupon(coupDto);
 		if(cnt3 == 1) {
@@ -144,11 +151,13 @@ public class TicketsCont {
 		
 		//basic04_web>webapp>form>08_ok.jsp 참고
 		String[] cseatList=req.getParameterValues("cseat");
+		String[] flagnumList=req.getParameterValues("flagnum");
 		
 		List<TicketDetailDTO> ticketDetail=new ArrayList<>();
+		int Rprice = Integer.parseInt(req.getParameter("price")); //R석의 가격 가져오기
 		
 		for(int i=0; i<cseatList.length; i++) {
-			int price=0;
+			int price = 0;
 			//좌석등급을 좌석 이름에서 자르기
 			String str = cseatList[i]; 
 			String grade = str.substring(0,1);
@@ -156,11 +165,11 @@ public class TicketsCont {
 			
 			//MAP에 등급별 좌석가격 넣기
 			if( grade.equals("R") ) {
-				price=88000;
+				price = Rprice;
 			}else if( grade.equals("S") ) {
-				price=77000;
+				price = Rprice-11000;
 			}else if( grade.equals("A") ) {
-				price=66000;
+				price = Rprice-22000;
 			}else {
 				price=0;
 				//System.out.println("일치하는 등급 없음!!");
@@ -169,6 +178,7 @@ public class TicketsCont {
 			TicketDetailDTO dto=new TicketDetailDTO();
 			dto.setTck_num(formatedNow);
 			dto.setCseat(cseatList[i]);
+			dto.setFlagnum(flagnumList[i]);
 			dto.setPrice(price);
 			
 			//ticketOrderDao.addDetail(dto);
@@ -202,12 +212,13 @@ public class TicketsCont {
 		//4. 상품 불러오기
 		List list = null;
 		
-		
 		List<ProductDTO> productList=ticketOrderDao.productList(orderDto.getC_no());
 		mav.addObject("list", productList);
 		
-		
-		
+		//5. 공연 이름 불러오기
+		String concertTitle = req.getParameter("title");
+		//System.out.println("concertTitle = " + concertTitle);
+		mav.addObject("concertTitle", concertTitle);
 		
 		/*
 		Map<String, Object> map = new HashMap<>();
@@ -242,37 +253,80 @@ public class TicketsCont {
 		//System.out.println(insertList);
 		//ticketOrderDao.addDetail(insertList);
 		*/
-
-		
-		
-
-		
 		
 		
 		return mav;
-	}//submitTest() end
+	}//submit() end
 	
 	
 	
-	
-	
-	
-	//날짜계산 함수 긁어온 코드
-	private static String AddDate(String strDate, int year, int month, int day) throws Exception {
+	@RequestMapping(value="/insertDBTest", method = RequestMethod.GET)
+	public ModelAndView insertDBTest(     HttpServletRequest req
+										, HttpSession session
+										){
+		//mav생성
+		ModelAndView mav=new ModelAndView();
+		TicketOrderDTO orderDto = new TicketOrderDTO();
 		
-        SimpleDateFormat dtFormat = new SimpleDateFormat("yyyyMMdd");
-        
-		Calendar cal = Calendar.getInstance();
-        
-		Date dt = dtFormat.parse(strDate);
-        
-		cal.setTime(dt);
-        
-		cal.add(Calendar.YEAR,  year);
-		cal.add(Calendar.MONTH, month);
-		cal.add(Calendar.DATE,  day);
-        
-		return dtFormat.format(cal.getTime());
-	}
+		//Session 아이디 확인
+		String s_m_id=(String)session.getAttribute("s_m_id");
+		if(s_m_id!=null) { //session아이디를 불러왔다면
+			orderDto.setM_id(s_m_id);
+			//System.out.println("s_m_id있음 : "+s_m_id);
+		}else {
+			//orderDto.setM_id("아이디없음");
+			//System.out.println("s_m_id없음 : "+s_m_id);
+			mav.setViewName("/loginForm");
+			return mav;
+		}//if end
+		
+		//1. Ticket_Order 테이블 INSERT
+		LocalDateTime now = LocalDateTime.now();
+		//포맷팅
+        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSS"));
+		orderDto.setTck_num(formatedNow);
+		
+		orderDto.setC_no(1);
+		orderDto.setCnt(255);
+		orderDto.setOrder_price(500000);
+		orderDto.setTotal_price(500000);
+		orderDto.setRec_name("Testname");
+		orderDto.setRec_tel("Testtel");
+		orderDto.setStus("Teststus");
+		
+		//ticketOrder 1줄 insert문
+		int cnt = ticketOrderDao.add(orderDto);
+		
+		List<TicketDetailDTO> addDetailTest=new ArrayList<>();
+		
+		for(int i=0; i<255; i++) {
+			TicketDetailDTO dto=new TicketDetailDTO();
+			dto.setTck_num(formatedNow);
+			dto.setCseat("test"+i);
+			dto.setFlagnum("B"+i);
+			dto.setPrice(200);
+			
+			addDetailTest.add(dto);
+		}//for end
+		
+		int cnt2=ticketOrderDao.addDetailTest(addDetailTest);
+		
+		if(cnt == 1 && cnt2>=1) {
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "데이터 추가 완료");
+			mav.addObject("url", "/home"); //로그인 폼 url명령어 입력
+			return mav;
+		}else { 
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "데이터 추가 실패");
+			mav.addObject("url", "/home"); //로그인 폼 url명령어 입력
+			return mav;
+		}//if end
+	}//insertDBTest() end
+	
+	
+	
+	
+	
 	
 }//class end

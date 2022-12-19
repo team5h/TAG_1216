@@ -144,4 +144,6 @@ public class MyproductCont {
 		
 	}//detail() end
 	
+	
+	
 }//class end

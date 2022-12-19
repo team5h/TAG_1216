@@ -35,8 +35,8 @@ public class MylikeCont {
 		//현재 로그인되어 있는 아이디
 		//나중에 소스 취합할때 주석 지우고 이부분으로 하면 됨
 		String s_m_id=(String)session.getAttribute("s_m_id");		
-		//String s_m_id="daseul";//소스 취합할때 이 줄 삭제하고, 윗줄에 있는 거로 해야 함
-					
+		//String s_m_id="daseul";//소스 취합할때 이 줄 삭제하고, 위줄에 있는 거로 해야 함
+    
 		ModelAndView mav=new ModelAndView();
 		mav.setViewName("mypage/mylike");
 		

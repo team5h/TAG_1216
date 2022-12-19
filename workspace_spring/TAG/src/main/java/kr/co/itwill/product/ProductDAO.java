@@ -2,11 +2,13 @@ package kr.co.itwill.product;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.co.itwill.QnA.QnADTO;
 import kr.co.itwill.concert.ConcertDTO;
 
 
@@ -22,7 +24,7 @@ public class ProductDAO {
 	
 	
 //  ---------------------------------------------------- [상품목록 - 전체]
-	public List<ProductDTO> list(int start, int end) {
+	public List<Map<String, Object>> list(int start, int end) {
 		HashMap<String, Integer> map = new HashMap<>();
 		map.put("start", start);
 		map.put("end", end);
@@ -44,7 +46,7 @@ public class ProductDAO {
 	}// categoryTotal() end
 	
 //  ---------------------------------------------------- [상품목록 - 페이징 리스트]	
-	public List<ProductDTO> list2(Integer start, Integer end, String category) {
+	public List<Map<String, Object>> list2(Integer start, Integer end, String category) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("start", start.toString());
@@ -67,7 +69,7 @@ public class ProductDAO {
 	}// categoryTotal() end
 
 //  ---------------------------------------------------- [상품목록 - 콘서트 리스트 + 페이징]
-	public List<ProductDTO> concertList(Integer start, Integer end, String c_no) {
+	public List<Map<String, Object>> concertList(Integer start, Integer end, String c_no) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("start", start.toString());
@@ -93,7 +95,65 @@ public class ProductDAO {
 	}//search() end
 	
 	
+	public Map<String, Object> proDetail(int pro_no){
+		return sqlSession.selectOne("product.proDetail",pro_no);
+	}
 	
+	public int pro_qnacnt (int pro_no) {
+		return sqlSession.selectOne("product.pro_qnacnt",pro_no);
+	}
 	
+	public int qnainsert (QnADTO dto) {
+		return sqlSession.insert("product.qnainsert", dto);
+	}
 	
+	public QnADTO qnadetail (int q_no, int passwd) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("q_no", q_no);
+		map.put("passwd", passwd);
+		
+		return sqlSession.selectOne("product.qnadetail",map);
+	}
+	
+	public List<QnADTO> qnalist (int pro_no) {
+		return sqlSession.selectList("product.qnalist",pro_no);
+	}
+	
+	public int addcart (int cnt, int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("cnt", cnt);
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.insert("product.addcart",map); 
+	}
+	
+	public int like (int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.insert("product.like",map);
+	}//end
+	
+	public int unlike (int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.delete("product.unlike",map);
+	}//end
+	
+	public int likechk (String m_id, int pro_no) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.selectOne("product.likechk", map); 
+	}// end
 }//class end

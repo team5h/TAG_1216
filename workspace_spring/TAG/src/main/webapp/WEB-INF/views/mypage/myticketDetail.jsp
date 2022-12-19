@@ -45,6 +45,10 @@
 	  clear: both;
 	}
 	
+	.myticketDetail{
+	
+	}
+	
 	.myticketDetail ol{
 		text-align:right; 
 		list-style:none; 
@@ -55,9 +59,45 @@
 		font-weight:bold;
 	}
 	
+	.btnDIV {
+		margin-left:40px;
+		margin-right:200px;
+		width:550px;
+		padding-top:20px;
+		padding-bottom:80px;
+		text-align:center;
+	}
+	
+	
+	
 	.bill{
-		padding-left:40px;
-		padding-right:200px;
+		margin-left:40px;
+		margin-right:40px;
+		width:550px;
+		border: 1px solid black;
+		padding: 60px 10px 10px 10px;
+	}
+	
+	.myticketDetail h1{
+		display:inline-block;
+		float:left;
+	}
+	
+	.product-image {
+		display:inline-block;
+		width: 550px;
+		margin-left: 40px;
+		padding-bottom: 40px;
+		text-align: right;
+	}
+	
+	.product-image img{
+	    width: 180px;
+	    float:right;
+	}
+	
+	table{
+		width:550px;
 	}
 	
 	.topLine{
@@ -71,9 +111,35 @@
 	.paddingBottom{
 		padding-bottom:40px;
 	}
+
+
+	
+
+	.cnlBtn {
+	  width: 100px;
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  margin: 0 10px 0 10px;
+	  border: none;
+	  background-color: black;
+	  color: white;
+	}
+	
+	.bckBtn {
+	  width: 100px;
+	  padding-top: 12px;
+	  padding-bottom: 12px;
+	  margin: 0 10px 0 10px;
+	  border: none;
+	  background-color: white;
+	  color: black;
+	  border: 1px solid black;
+	}
+
+	
 </style>
 
-<!-- 본문 시작 -->
+
 
 <div class="clearfix">
 <div class="title">
@@ -104,79 +170,129 @@
 
 <div class="rightcontent">
 	<div class="myticketDetail">
-		<h1 style="width:40px; padding-left:40px;">PREP LIVE IN SEOUL</h1>
+		<div class="product-image">
+			<h6 style="width:60px; border-bottom:2px solid black;"></h6>
+			<h1 style="width:40px;">${detail.title}</h1>
+			<%-- <a href="detail/${row.pro_no}"><img src="/storage/${row.postername}" width="300px" height="400px"></a> --%>
+			<a href="/concert/${detail.c_no}"><img src="/storage/${detail.postername}"></a>
+		</div>
 		<div class="bill">
-			<table class="table table-hover">
+			<table class="table">
 			<tr>
-				<th colspan='2' class="alignRight">주문번호 : 20221019-11240005</th>
+				<th colspan='2' class="alignRight">주문번호 : ${detail.tck_num}</th>
 			</tr>
 			<tr class="topLine">
-				<th>티켓 좌석번호</th>
-				<th></th>
+				<th colspan='2'>티켓 좌석번호</th>
 			</tr>
-			<tr>
-				<td>R석 1층 스탠딩 B구역 입장번호 50</td>
-				<td class="alignRight">88,000원</td>
-			</tr>
-			<tr>
-				<td>R석 1층 스탠딩 B구역 입장번호 51</td>
-				<td class="alignRight">77,000원</td>
-			</tr>			
+			<c:forEach items="${list}" var="row" varStatus="vs">
+				<tr>
+					<td style="width:50%;">${row.cseat}</td>
+					<td class="alignRight"><fmt:formatNumber value="${row.price}" type = "currency"/></td>
+				</tr>
+			</c:forEach><!-- c:forEach end -->	
 			<tr class="topLine paddingBottom">
 				<th class="paddingBottom">총 수량</th>
-				<td class="alignRight">2매</td>
+				<td class="alignRight">${detail.cnt}매</td>
 			</tr>
-			<tr><td> </td><td> </td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
 			<tr class="topLine">
 				<th class="paddingBottom">주문 금액</th>
-				<td class="alignRight">165,000원</td>
+				<td class="alignRight"><fmt:formatNumber value="${detail.order_price}" type = "currency"/></td>
 			</tr>	
 			<tr>
 				<th>할인 금액</th>
-				<td class="alignRight">-3,000원</td>
+				<td class="alignRight">-<fmt:formatNumber value="${detail.dis_price}" type = "currency"/></td>
 			</tr>	
 			<tr>
 				<td class="paddingBottom"></td>
-				<td class="alignRight">국가유공자 할인 1매, 장애인 할인 2매</td>
+				<td class="alignRight">${detail.dis_descrip}</td>
 			</tr>					
-			<tr><td> </td><td> </td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
 			<tr class="topLine">
 				<th>배송비</th>
-				<td class="alignRight">3,000원</td>
+				<c:choose>
+					<c:when test="${detail.d_fee == 0}">
+						<td class="alignRight">현장수령</td>
+					</c:when>
+					<c:otherwise>
+						<td class="alignRight"><fmt:formatNumber value="${detail.d_fee}" type = "currency"/></td>
+					</c:otherwise>
+				</c:choose>
 			</tr>
-			<tr><td> </td><td> </td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
 			<tr class="topLine">
 				<th class="paddingBottom">최종 결제금액</th>
-				<td class="alignRight">165,000원</td>
+				<td class="alignRight"><fmt:formatNumber value="${detail.total_price}" type = "currency"/></td>
 			</tr>	
-			<tr><td> </td><td> </td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr>
+				<th colspan="2" style="text-align:center;">수령인 정보</th>
+			</tr>
 			<tr class="topLine">
 				<th>받는사람</th>
-				<td>이강선</td>
+				<td>${detail.rec_name}</td>
 			</tr>	
 			<tr>
 				<th>핸드폰번호</th>
-				<td>010-5456-3425</td>
+				<td>${detail.rec_tel}</td>
 			</tr>
-			<tr>
-				<th>받는주소</th>
-				<td>서울시 강남구 삼원타워 4층</td>
-			</tr>
-			<tr>
-				<th class="paddingBottom">배송메세지</th>
-				<td>빨리주세요</td>
-			</tr>	
-			<tr><td> </td><td> </td></tr>
+			<c:choose>
+				<c:when test="${detail.d_fee == 0}">
+					<!-- 현장수령이면 주소,메세지 표시 안함 -->
+				</c:when>
+				<c:otherwise>
+					<tr>
+						<th>받는주소</th>
+						<td>${detail.rec_addr}</td>
+					</tr>
+					<tr>
+						<th class="paddingBottom">배송메세지</th>
+						<td>${detail.msg}</td>
+					</tr>
+				</c:otherwise>
+			</c:choose>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
+			<tr><td></td><td></td></tr>
 			<tr class="topLine">
 				<th class="paddingBottom">결과상태</th>
-				<td>배송완료</td>
+				<td>${detail.stus}</td>
 			</tr>					
 			</table>
-		</div>
+		</div><!-- bill end -->
+		<div class="btnDIV">
+				<!--  
+				<button type="button" onclick="location.href='/mypage/myticket/delete/${detail.tck_num}'">결제취소</button>
+				-->
+				<button class="cnlBtn" onclick="location.href='/mypage/myticket/cancelPolicy/${detail.tck_num}'">결제취소</button>
+				<button class="bckBtn" onclick="location.href='/mypage/myticket'">목록으로</button>
+			
+		</div><!-- 결제취소 / 목록으로 -->
 	</div><!-- myticketDetail end -->
 </div><!-- rightcontent end -->
-</div>
+
+</div><!-- clearfix end -->
 
 <!-- 본문 끝 -->
+
+
+
+<script>
+
+
+</script>
+
+
+
+
+
 
 <%@ include file="../footer.jsp" %>
