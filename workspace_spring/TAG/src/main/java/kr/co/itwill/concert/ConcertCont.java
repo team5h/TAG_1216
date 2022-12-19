@@ -222,6 +222,7 @@ public class ConcertCont {
 		//System.out.println(concertDao.detailConcert(c_no));
 		mav.addObject("concert", concertDao.detailConcert(c_no));
 		mav.addObject("earlybird", concertDao.earlybirdCheck(c_no));
+		mav.addObject("flagnumList", concertDao.getFlagnum(c_no));
 		
 		mav.addObject("likechk", concertDao.likechk(m_id, c_no));
 		

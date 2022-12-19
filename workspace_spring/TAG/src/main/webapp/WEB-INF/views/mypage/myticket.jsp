@@ -58,18 +58,27 @@
 		<p class="clickInfo">상세내역을 보고싶으시면 예매번호를 클릭해주세요!</p>
 		<table class="table table-hover">
 			<tr>
+				<th>예매일</th>
 				<th>예매번호</th>
 				<th style="width:40%">공연 이름</th>
 				<th>수량</th>
-				<th>최종 결제금액</th>
+				<th>수령방법</th>
 				<th>결과 상태</th>
 			</tr>
 			<c:forEach var="row" items="${list}" varStatus="vs">
 			<tr>
+			<c:set var="tck_numStr" value="${row.tck_num}"/><!-- 1. 티켓 번호를 가져온다 -->
+			<fmt:parseDate value="${fn:substring(tck_numStr,0,8)}" var="RegDate" pattern="yyyyMMdd"/><!-- 2. Substr으로 자르고 날짜 형변환을 한다 -->
+				<td><fmt:formatDate value="${RegDate}" pattern="yyyy.MM.dd(E)"/></td><!-- 3. 출력 -->
 				<td><a href="/mypage/myticket/${row.tck_num}">${row.tck_num}</a></td>
 				<td>${row.title}</td>
-				<td>${row.cnt}</td>
-				<td>${row.total_price}</td>
+				<td>${row.cnt}매</td>
+				<td>
+					<c:choose>
+						<c:when test="${row.d_fee == 0}">현장수령</c:when>
+						<c:when test="${row.d_fee != 0}">배송</c:when>
+					</c:choose>
+				</td>
 				<td>${row.stus}</td>
 			</tr>
 			</c:forEach>

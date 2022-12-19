@@ -1,7 +1,61 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+
+<script src="https://kit.fontawesome.com/698fcd5feb.js" crossorigin="anonymous"></script>
+
+
+<style>
+
+#seatAddFormjsp table, #ticketAddFormjsp table{
+	font-size:12px;
+}
+
+#seatAddFormjsp ul {
+	list-style:none; 
+	padding-left:0px;
+	font-size:14px;
+}
+
+#panel {
+	font-size:16px;
+}
+
+
+
+#reSelect, #goSaddForm, #goSale {
+	  width: 140px;
+	  height: 60px;
+	  border: 1px solid black;
+	  background-color: white;
+	  color: black;
+	  font-size:16px;
+}
+
+#goTaddForm, #goDlv {
+	  width: 180px;
+	  height: 60px;
+	  border: none;
+	  background-color: black;
+	  color: white;
+	  font-size:18px;
+}
+
+#goFinish {
+	  width: 180px;
+	  height: 60px;
+	  border: none;
+	  background-color: #33FF33;
+	  color: black;
+	  font-weight: bold;
+	  font-size:18px;
+}
+	
+
+</style>
+
+
 <div id="seatAddFormjsp">
-	<table style="border:1px solid black; height:520px; width: 347px;">
+	<table style="border:1px solid black; height:570px; width: 347px;">
 	<tr>
 		<td>
 			공연장 미니맵<br>
@@ -21,10 +75,22 @@
 	<tr>
 		<td>
 			<ul>
-				<li value="88000">스탠딩 R 88,000원</li>
-				<li id="R" value="88000">지정석 R 88,000원</li>
-				<li id="S" value="77000">지정석 S 77,000원</li>
-				<li id="A" value="66000">지정석 A 66,000원</li>
+				<li value="${concert.price}">
+					<button type="button" style="background:palegreen; border:none; height:12px; width:12px; padding:0;"></button>
+					스탠딩 R <fmt:formatNumber value="${concert.price}" pattern="#,###"/>원
+				</li>
+				<li id="R" value="${concert.price}">
+					<button type="button" style="background:mediumslateblue; border:none; height:12px; width:12px; padding:0;"></button>
+					지정석 R <fmt:formatNumber value="${concert.price}" pattern="#,###"/>원
+				</li>
+				<li id="S" value="${concert.price-11000}">
+					<button type="button" style="background:dodgerblue; border:none; height:12px; width:12px; padding:0;"></button>
+					지정석 S <fmt:formatNumber value="${concert.price-11000}" pattern="#,###"/>원
+				</li>
+				<li id="A" value="${concert.price-22000}">
+					<button type="button" style="background:darkcyan; border:none; height:12px; width:12px; padding:0;"></button>
+					지정석 A <fmt:formatNumber value="${concert.price-22000}" pattern="#,###"/>원
+				</li>
 			</ul>
 		</td>
 	</tr>
@@ -33,7 +99,7 @@
 	</tr>
 	<tr>
 		<td>
-			<div id="panel" style="height:80px; overflow-y:scroll;">
+			<div id="panel" style="height:100px; overflow-y:scroll; margin:0; padding:auto;">
 			<!-- 
 			
 			 -->
@@ -41,14 +107,14 @@
 		</td>
 	</tr>
 	<tr>
-		<td>
-			<button type="button" id="reSelect" name="reSelect" onclick="reSelectFN()">다시 선택</button>
+		<td style="text-algin:center;">
+			<button type="button" id="reSelect" name="reSelect" onclick="reSelectFN()">
+				다시 선택 <i class="fa-solid fa-arrow-rotate-left"></i>
+			</button>
 			
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<button type="button" id="goTaddForm" name="goTaddForm">좌석 선택 완료 ></button>
+			<button type="button" id="goTaddForm" name="goTaddForm">
+				좌석 선택 완료 <i class="fa-solid fa-arrow-right" style="color:white;"></i>
+			</button>
 		</td>
 	</tr>
 	</table>
@@ -63,14 +129,14 @@
 	<input type="hidden" name="total_price" id="total_price" value="0"><!-- 최종결제금액 -->
 	<input type="hidden" name="dis_descrip" id="dis_descrip" value="할인내용"><!-- 할인내용 -->
 	<input type="hidden" name="stus" value="결제완료"><!-- 결과상태 -->
-	<table style="border:1px solid black; height:520px; width: 347px;">
+	<table style="border:1px solid black; height:570px; width: 347px;">
 	<tr>
-		<td style="width:30%; background:lightgrey;">
-			공연포스터 이미지
+		<td style="width:30%; background:lightgrey; ">
+			<img style="width:60px;" src="/storage/${concert.postername}">
 		</td>
-		<td>
-			공연이름<br>
-			공연정보
+		<td style="width:70%;">
+			${concert.title}<br>
+			${concert.watch_age}
 		</td>
 	</tr>
 	<tr>
@@ -80,11 +146,13 @@
 	</tr>
 	<tr>
 		<td style="background:lightgrey;">날짜</td>
-		<td>2022년 12월 15일(금)</td>
+		<td><fmt:parseDate var="regDate" value="${concert.date}" pattern="yyyy-MM-dd"/>
+			<fmt:formatDate value="${regDate}" pattern="yyyy. MM. dd (E)"/></td>
 	</tr>
 	<tr>
 		<td style="background:lightgrey;">시간</td>
-		<td>16시 00분</td>
+		<td><fmt:formatDate value="${concert.start_time}" type="time" pattern="a hh:mm" /> - 
+			<fmt:formatDate value="${concert.end_time}" type="time" pattern="hh:mm" /></td>
 	</tr>
 	<tr>
 		<td style="background:lightgrey;">매수</td>
@@ -125,10 +193,10 @@
 	</tr>
 	<tr>
 		<td colspan="2">
-			<button type="button" id="goSaddForm" name="goSaddForm">이전단계</button><!-- 1.좌석선택으로 -->
-			<button type="button" id="goSale" name="goSale">이전단계</button><!-- 2.가격할인으로 -->
-			<button type="button" id="goDlv" name="goDlv">다음단계</button><!-- 3.배송현장수령으로 -->
-			<button type="submit" id="goFinish" name="goFinish">결제완료</button><!-- 결제완료 -->
+			<button type="button" id="goSaddForm" name="goSaddForm"><i class="fa-solid fa-chevron-left"></i> 이전단계</button><!-- 1.좌석선택으로 -->
+			<button type="button" id="goSale" name="goSale"><i class="fa-solid fa-chevron-left"></i> 이전단계</button><!-- 2.가격할인으로 -->
+			<button type="button" id="goDlv" name="goDlv">다음단계 <i class="fa-solid fa-chevron-right"></i></button><!-- 3.배송현장수령으로 -->
+			<button type="submit" id="goFinish" name="goFinish">결제완료 <i class="fa-solid fa-check"></i></button><!-- 결제완료 -->
 		</td>
 	</tr>
 	</table>

@@ -89,6 +89,14 @@ public class ConcertDAO {
 	}//earlybirdCheck() end
 	
 	
+
+// ---------------------------------------------------- [flagNum 가져오기 -다슬-]	
+	public List<Map<String, Object>> getFlagnum(String c_no) {
+		return sqlSession.selectList("concert.getFlagnum", c_no);
+	}//getFlagnum() end
+
+
+
 // ---------------------------------------------------- [공연상세 좋아요 개수 증가]	
 	public int likecntInc(ConcertDTO c_no) {
 		//System.out.println("DAO 잘 들어옴.");
@@ -128,5 +136,5 @@ public class ConcertDAO {
 	}//myLikeDelete() end
 	
 	
-	
+
 }//class end
