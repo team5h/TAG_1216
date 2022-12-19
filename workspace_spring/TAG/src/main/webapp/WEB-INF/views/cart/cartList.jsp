@@ -9,6 +9,8 @@
 
 <style>
 
+
+
 /* 전체 가로 너비 */
 .container {max-width: 1350px; !important;} 
 
@@ -122,21 +124,20 @@ img{object-fit: contain;}
 
 /* 상품의 네비바 영역 */
 .list_aside {
-  background-color: lightblue;
+  background-color: #F2F3F4;
   position: sticky;
-  --top: 80;
+  top: 60px;
   width: 30%;
-  height: 70%;
   --padding-top: 20px;
-  margin-bottom: 20px;
+  --margin-bottom: 20px;
   float: right;
 }
 
 /* 상품 영역 */
 .list_content {
-  background-color: lightgreen;
-  width: 70%;
-  --padding-top: 20px;
+  --background-color: lightgreen;
+  width: 68%;
+  margin-right: 25px;
   margin-bottom: 20px;
   float: left;
 }
@@ -203,19 +204,145 @@ img{object-fit: contain;}
 
 
 
-  table {
+  .listCheckTable {
     width: 100%;
-    border-top: 1px solid #444444;
+    --border-top: 1px solid #444444;
     border-collapse: collapse;
   }
-  th, td {
-    border-bottom: 1px solid #444444;
-    border-left: 1px solid #444444;
+  
+   th, td {
+    --border-bottom: 1px solid #444444;
+    --border-left: 1px solid #444444;
     padding: 10px;
-  }
+  } 
+  
+  
+  
   th:first-child, td:first-child {
     border-left: none;
   }
+  
+  .cartorder, .orderconfirm{
+  color: #D7DBDD;
+  }
+  
+  #inform-table td{
+  padding: 0 0 0 20px;
+  }
+  
+  
+  
+/* 체크박스 css 시작 --------------------------------------------- */
+input[type="checkbox"] { display: none; }
+ 
+input[type="checkbox"] + label {
+  display: block;
+  position: relative;
+  --padding-left: 35px;
+  font: 14px/20px 'Open Sans', Arial, sans-serif;
+  color: black;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+input[type="checkbox"] + label:last-child { margin-bottom: 0; }
+
+input[type="checkbox"] + label:before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 18px;
+  border: 1px solid black;
+  --position: absolute;
+  left: 0;
+  top: 0;
+  opacity: .6;
+  -webkit-transition: all .12s, border-color .08s;
+  transition: all .12s, border-color .08s;
+}
+
+input[type="checkbox"]:checked + label:before {
+  width: 10px;
+  top: -5px;
+  left: 5px;
+  border-radius: 0;
+  opacity: 1;
+  border-top-color: transparent;
+  border-left-color: transparent;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+/* 체크박스 css 종료  ---------------------------------------------  */
+	
+	.cartTableBox td {
+	--border-bottom: 1px solid grey;
+	}
+	
+	.cart-delete-btn {
+	 background:none;
+ 	 border:none;
+	}
+	
+	.li_title{
+	padding: 35px;
+	font-size: 17px;
+	}
+	
+	.summary{
+	display: inline-block;
+	padding-bottom: 10px;
+	}
+	
+	.summaryList{
+	padding-bottom: 15px;
+	color: #A6ACAF;
+	font-weight: thin;
+	}
+	
+	.summaryDataList{
+	padding-bottom: 15px;
+	}
+	
+	.totalCheck{
+	font-size: 24px;
+	display: block;
+	padding-bottom: 40px;
+	}
+	
+	.checkoutBtn{
+	background-color: black;
+ 	border:none;
+ 	color: white;
+	position: relative;
+	float: bottom;
+	width: 100%;
+	height: 50px;
+	margin: 0 auto;
+	font-size: 20px;
+	}
+	
+	.selectDeleteBtn{
+	 width: 80px;
+	 height: 40px;
+	 background-color: white;
+ 	 border: 1px solid #F2F3F4 ;
+ 	 font-size: 15px;
+ 	 --padding-left: 0;
+	}
+
+
+/* 수량버튼 */
+.count-wrap {position: relative;padding: 0 20px;overflow: hidden;}
+.count-wrap > button {border: 0;background-color: white;color: #000;width: 30px;height: 30px;position: absolute;top: 0;font-size: 12px;}
+.count-wrap > button.minus {left: 2;}
+.count-wrap > button.plus {right: 7;}
+.count-wrap .inp {border: 0;width: 20px;height: 30px;text-align: center;display: block;width: 100%;}
+
+.concert-name{padding-bottom: 6px; font-size: 15px;}
+.product-name{padding-bottom: 12px; font-size: 18px;}
+.product-option{font-size: 14px;}
 
 </style>
 
@@ -242,33 +369,16 @@ function topFunction() {
 
 
 
-function musicCategory(){
-	var category = $('#category').val();
-	alert(category);
-}//musicCategory() end
-
-
-
-
-function categoryList() {
-	var category = $('#category').val();
-	alert(category);
-	
-	
-}
-
-
 </script>
 
 
 
 <!-- 본문영역 -->
-<h2>Shopping Bag</h2>
-
+<h2>Shopping Cart</h2>
 <div class="order-check">
-<span> 01 LIST CHECK </span> <span class="order-arrow"> &nbsp; > &nbsp; </span> 
-<span> 02 ORDER </span> <span class="order-arrow"> &nbsp; > &nbsp; </span>  
-<span> 03 ORDER CONFIRM </span> 
+<span class="listcheck"> 01 LIST CHECK </span> <span class="order-arrow"> &nbsp; > &nbsp; </span> 
+<span class="cartorder"> 02 ORDER </span> <span class="order-arrow"> &nbsp; > &nbsp; </span>  
+<span class="orderconfirm"> 03 ORDER CONFIRM </span> 
 </div>
 
 <button onclick="topFunction()" id="myBtn" title="Go to top" style="font-size: 26px;">Go to top ↑</button>
@@ -288,114 +398,238 @@ function categoryList() {
 		
 			<!-- list_aside 시작 -->
 			<div class="list_aside">
-				list_aside list_aside list_aside list_aside
-
+			
 				<div class="li_title">
-				        
-				        
+					<div style="font-size: 24px; font-weight: bold; padding-bottom: 30px;">주문 요약</div>
+					
+					<div class="summary catefory" style="float: left;">
+						<div class="summaryList">총 주문금액</div>
+						<div class="summaryList">총 배송비</div>
+						<div class="summaryList">할인금액</div>
+						<div class="summaryList" style="padding-top: 120px;">총 결제금액</div>
+					</div>    
+					<div class="summary data" style="float: right; text-align: right;">
+						<div class="summaryDataList">총 주문금액</div>
+						<div class="summaryDataList">총 배송비</div>
+						<div class="summaryDataList">할인금액</div>
+						<div class="summaryDataList"  style="padding-top: 120px;">총 결제금액</div>
+					</div>   
+				
+					<div>
+						<button class="checkoutBtn">Checkout</button>
+					</div>
+				
 				</div><!-- li_title 끝 -->
+				
 			</div><!-- list_aside 끝 -->
 			
 			
 			<!-- list_content 시작 -->
 			<div class="list_content">
-				<table>
+				
+				<!-- checkbox_group 시작 -->
+				<div class="checkbox_group">			
+				
+				<table class="cartTableBox">
 					<thead>
 					  <tr>
-					    <th>상품정보</th><th>가격</th><th>수량</th><th>배송비</th>
+					  	<th style="width: 40px; padding-left: 0;"><!-- 선택박스 -->
+							<div class="agreeAll">
+							<input type="checkbox" id="check_all" >
+							<label for="check_all"></label>
+							</div>
+					  	</th>
+					    <th>상품정보</th>
+					    <th>가격</th>
+					    <th>수량</th>
+					    <th>배송비</th>
+					    <th></th>
 					  </tr>
 					</thead>
+					
+ 					<c:forEach var="row" items="${mycart}" varStatus="vs">
  					<tbody>
 				      <tr>
-				        <td>Lorem</td><td>Ipsum</td><td>Dolor</td><td>Dolor</td>
-				      </tr>
-				      <tr>
-				        <td>Lorem</td><td>Ipsum</td><td>Dolor</td><td>Dolor</td>
+				       	
+				       	<td style="width: 30px; padding-left: 0;">
+				       	
+							<input type="checkbox" id="check${row.cart_no}" name="check" class="normal" >
+							<label for="check${row.cart_no}"></label>
+				       		
+						</td>
+				   
+				      	<!-- 상품정보 -->
+				        <td style="width: 450px; padding-bottom: 30px;">
+					        <table id="inform-table"> 
+							    <tr>
+								    <td style="padding:0;">
+								    	<div class="product-imageandicon">
+											<a href="">
+											<img src="/storage/${row.postername}" width="140">
+											</a>
+										</div>
+								    </td>
+								    <td>
+								    	<div class="concert-name">${row.title}</div>
+								    	<div class="product-name">${row.pro_name}</div>
+								    	<div class="product-option">
+								    	색상:${row.color}
+								    	사이즈: ${row.size}
+								    	</div>
+								    </td>
+							    </tr>
+						    </table> 
+			 
+						    
+				        </td>
+
+				        <!-- 가격 -->
+				        <td style="width: 130px;">
+				        <input type="hidden" id="product_price${row.cart_no}" name="product_price" value="${row.price}">
+				        ￦ <fmt:formatNumber id="" value="" pattern="#,###" />
+				        </td>
+				        <td style="width: 130px; padding-left: 0px;">
+				        <div class="count-wrap _count">
+						    <button id="count-minus${row.cart_no}" type="button" class="minus" value="${row.cart_no}"><img src="/images/minus.svg"></button>
+						    <input id="count-plus${row.cart_no}" type="text" class="inp" value="${row.cnt}" />
+						    <button id="count-plus${row.cart_no}" type="button" class="plus" value="${row.cart_no}"><img src="/images/plus.svg"></button>
+						</div>
+				        </td>
+				        
+				        <!-- 배송비 -->
+						    <c:choose>
+					         <c:when test = "${row.price <= 50000}">
+						        <td style="width: 125px;">
+					        		<fmt:formatNumber value="3000" pattern="#,###" />
+					        	</td>
+					         </c:when>
+					
+					         <c:when test = "${row.price >= 50000}">
+					           	<td style="width: 125px;">
+					        		<div style="font-size: 14px;">50,000원 이상 무료배송</div>
+					        	</td>
+					         </c:when>
+					      </c:choose>
+					      	 <input type="hidden" class="inp" value="${total[vs.index]}" />
+							<td>${total[vs.index]} ${row.countpid}</td>
+							<td>${row.countpid}</td>
+
+
+
+				        
+				        <td style="width: 78px;">
+				        	<button onclick="cartdelete(this)" value="${row.cart_no}" type="button" id="cartdeleteBtn${row.cart_no}" class="cart-delete-btn"><img src="/images/xbutton.svg"></button>
+				        </td>
 				      </tr>
 				    </tbody>
+					</c:forEach>
 				</table>   
+				</div><!-- checkbox_group end -->
 				
-										
-					
-
-					
-				<div style="width: 100%; display: block; text-align: center;">	
-					<c:if test="${requestScope.count > 0}">
-						<c:set var="pageCount" value="${requestScope.totalPage}" />
-						<c:set var="startPage" value="${requestScope.startPage}" />
-						<c:set var="endPage" value="${requestScope.endPage}" />
+				<div class="tablepadding" style="padding-bottom: 40px;"></div>
 				
-				
-							<!-- endPage는 10단위이기에 총 페이지가 end 페이지보다 작으면 그 수를 대입한다 -->
-							<!-- 즉, 만약 최종 페이지 수가 22라면 30까지 표시할 필요가 없으니 엔드 페이지 수를 22로 맞춘다 -->
-							<c:if test="${endPage > pageCount}">
-								<c:set var="endPage" value="${pageCount}" />
-							</c:if>
-				
-				
-							<c:if test="${category == null}">
-				
-								<!-- startPage는 1, 11, 21 .. 이기에 1보다 크다면 이전 페이지 이동 가능-->
-								<c:if test="${startPage > 1}">
-									<a href="/list.do?pageNum=${startPage-1}">[이전]</a>
-								</c:if>
+				<button class="selectDeleteBtn">선택삭제</button>
 					
-								<!-- 현재 페이지 볼드체, 현재 페이지 외의 보이는 페이지 전부 이동 링크 걸기 -->
-								<c:forEach var="i" begin="${startPage}" end="${endPage}">
-									<c:choose>
-										<c:when test="${pageNum == i}">
-											<span style="font-weight: bold">${i}</span>
-										</c:when>
-										<c:when test="${pageNum != i}">
-											<a href="/list.do?pageNum=${i}">${i}</a>
-										</c:when>
-									</c:choose>
-								</c:forEach>
-					
-								<!-- endPage보다 총 페이지 수가 크다면 다음 pages로 이동 가능하다 -->
-								<c:if test="${endPage < pageCount}">
-									<a href="/list.do?pageNum=${startPage+10}">[다음]</a>
-								</c:if>
-							
-							</c:if>
-							
-							
-							
-							<c:if test="${category != null}">
-								
-								<!-- startPage는 1, 11, 21 .. 이기에 1보다 크다면 이전 페이지 이동 가능-->
-								<c:if test="${startPage > 1}">
-									<a href="/list.do?category=${category}&pageNum=${startPage-1}">[이전]</a>
-								</c:if>
-					
-								<!-- 현재 페이지 볼드체, 현재 페이지 외의 보이는 페이지 전부 이동 링크 걸기 -->
-								<c:forEach var="i" begin="${startPage}" end="${endPage}">
-									<c:choose>
-										<c:when test="${pageNum == i}">
-											<span style="font-weight: bold">${i}</span>
-										</c:when>
-										<c:when test="${pageNum != i}">
-											<a href="/list.do?category=${category}&pageNum=${i}">${i}</a>
-										</c:when>
-									</c:choose>
-								</c:forEach>
-					
-								<!-- endPage보다 총 페이지 수가 크다면 다음 pages로 이동 가능하다 -->
-								<c:if test="${endPage < pageCount}">
-									<a href="/list.do?category=${category}&pageNum=${startPage+10}">[다음]</a>
-								</c:if>
-							</c:if>
-							
-							
-							
-							
-					</c:if>
-				</div>	
-						
 			</div><!-- list_content -->
 		</div><!-- list_container -->
+		
 
 </div><!-- wrapAll end -->
+
+
+<script>
+// 체크박스 전체 선택
+$(".checkbox_group").on("click", "#check_all", function () {
+    $(this).parents(".checkbox_group").find('input').prop("checked", $(this).is(":checked"));
+});
+
+// 체크박스 개별 선택
+$(".checkbox_group").on("click", ".normal", function() {
+    var is_checked = true;
+
+    $(".checkbox_group .normal").each(function(){
+        is_checked = is_checked && $(this).is(":checked");
+    });
+
+    $("#check_all").prop("checked", is_checked);
+});
+
+
+/* <input type="hidden" id="product_price${row.price}" name="product_price" value="${row.price}"> */
+
+
+//수량 옵션
+$('._count :button').on({
+    'click' : function(e){
+        e.preventDefault();
+        var $count = $(this).parent('._count').find('.inp');
+        var now = parseInt($count.val());
+        var min = 1;
+        var max = 999;
+        var num = now;
+		var price = $("#product_price${row.cart_no}").val();
+		alert(price);
+		
+        
+        if($(this).hasClass('minus')){
+            var type = 'm';
+        }else{
+            var type = 'p';
+        }
+        if(type=='m'){
+            if(now>min){
+                num = now - 1;
+                //가격가져오고
+                //가격*num
+            }
+        }else{
+            if(now<max){
+                num = now + 1;
+                //가격가져오고
+                //가격*num
+            }
+        }
+        if(num != now){
+            $count.val(num);
+        }
+    }
+});
+
+
+
+
+
+// 장바구니 삭제
+var m_id = "${s_m_id}";
+//alert(m_id);
+
+function cartdelete(this1, m_id){
+	var cart_no = this1.value;
+    //alert(cart_no);
+    
+	$.ajax({
+			url: '/cart/deleteMycart'
+			,type:'post'
+			,data : {'cart_no':cart_no, 'm_id':m_id}
+			,success : function(data) {
+				alert("성공!");
+			}//success end
+		
+	});//$.ajax({}) end
+
+	
+	
+} //cartdelete(this) end
+	
+	
+
+
+
+
+
+</script>
+
+
 
 <!-- 본문영역 -->
 

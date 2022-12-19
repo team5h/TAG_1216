@@ -2,6 +2,7 @@ package kr.co.itwill.product;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ public class ProductDAO {
 	
 	
 //  ---------------------------------------------------- [상품목록 - 전체]
-	public List<ProductDTO> list(int start, int end) {
+	public List<Map<String, Object>> list(int start, int end) {
 		HashMap<String, Integer> map = new HashMap<>();
 		map.put("start", start);
 		map.put("end", end);
@@ -44,7 +45,7 @@ public class ProductDAO {
 	}// categoryTotal() end
 	
 //  ---------------------------------------------------- [상품목록 - 페이징 리스트]	
-	public List<ProductDTO> list2(Integer start, Integer end, String category) {
+	public List<Map<String, Object>> list2(Integer start, Integer end, String category) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("start", start.toString());
@@ -67,7 +68,7 @@ public class ProductDAO {
 	}// categoryTotal() end
 
 //  ---------------------------------------------------- [상품목록 - 콘서트 리스트 + 페이징]
-	public List<ProductDTO> concertList(Integer start, Integer end, String c_no) {
+	public List<Map<String, Object>> concertList(Integer start, Integer end, String c_no) {
 		
 		HashMap<String, String> map = new HashMap<>();
 		map.put("start", start.toString());

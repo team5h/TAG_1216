@@ -391,9 +391,7 @@ function topFunction() {
 								
 								
 								<!-- 공연명 -->
-								<div id="concert_name">
-									<a href="#">PREP LIVE IN SEOUL</a>
-								</div>
+								<div id="concert_name">${row.title}</div>
 								
 								<!-- 상품명 -->
 								<div id="product_name">
