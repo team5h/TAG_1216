@@ -92,7 +92,7 @@
 		FROM(
 		    SELECT @RNO := @RNO + 1 as r, CC.*
 		    FROM (
-		        SELECT q.q_no, qname, nickname, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus,a.regdate as answerdate
+		        SELECT q.q_no, qname, nickname, content, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus,a.regdate as answerdate
                 FROM qna q JOIN product p ON q.pro_no = p.pro_no
                            JOIN member m ON q.qname = m.m_id
                            left outer JOIN answer a ON a.q_no = q.q_no

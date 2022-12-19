@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
@@ -53,43 +54,47 @@ public class SellerProductCont {
 	SellerProductDAO sellerproductdao;
 	
 	@RequestMapping("/mypageS/create")
-	public ModelAndView productForm() {
+	public ModelAndView productForm(HttpSession session) {
 		
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("/memberSeller/productForm");
-		mav.addObject("concertlist",sellerproductdao.concertlist());
-		
-		return mav;
+		String p_id=(String)session.getAttribute("s_p_id");	
+
+		if(p_id!=null) { //session아이디를 불러왔다면
+			mav.setViewName("/memberSeller/productForm");
+			mav.addObject("concertlist",sellerproductdao.concertlist());
+			
+			return mav;
+			
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
+		}//if end
+	
 	}//end
 
 //------------------------------------------------------------------------- SUMMER NOTE 
-
-	@PostMapping(value="/uploadSummernoteImageFile", produces = "application/json")
+	
+	@RequestMapping(value="/uploadSummernoteImageFile", produces = "application/json; charset=utf8")
 	@ResponseBody
-	public JsonObject uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile) {
-		
+	public String uploadSummernoteImageFile(@RequestParam("file") MultipartFile multipartFile, HttpServletRequest request )  {
 		JsonObject jsonObject = new JsonObject();
 		
-		/*
-		 	[ 이미지를 프로젝트 내부경로에 저장 → 하단에 톰캣 외부 링크 연결 함수때문에 오류나서 이미지를 못불러옴(더뜯어봐야함!)
-			String contextRoot = new HttpServletRequestWrapper(req).getRealPath("/storage");
-			String fileRoot = contextRoot+"/summernoteImage/";
-		*/
-		
-		String fileRoot = "C:\\summernote_image\\";	//저장될 외부 파일 경로
-		//맥북 유저는 /Users/macbook-id/summernote_image/ 로 수정! 
+		// 내부경로로 저장
+		String contextRoot = new HttpServletRequestWrapper(request).getRealPath("/");
+		String fileRoot = contextRoot+"/summernoteImg/";
 		
 		String originalFileName = multipartFile.getOriginalFilename();	//오리지날 파일명
 		String extension = originalFileName.substring(originalFileName.lastIndexOf("."));	//파일 확장자
-				
 		String savedFileName = UUID.randomUUID() + extension;	//저장될 파일 명
 		
 		File targetFile = new File(fileRoot + savedFileName);	
-		
 		try {
 			InputStream fileStream = multipartFile.getInputStream();
 			FileUtils.copyInputStreamToFile(fileStream, targetFile);	//파일 저장
-			jsonObject.addProperty("url", "/summernoteImage/"+savedFileName);
+			jsonObject.addProperty("url", "/summernoteImg/"+savedFileName); // contextroot + resources + 저장할 내부 폴더명
 			jsonObject.addProperty("responseCode", "success");
 				
 		} catch (IOException e) {
@@ -97,25 +102,10 @@ public class SellerProductCont {
 			jsonObject.addProperty("responseCode", "error");
 			e.printStackTrace();
 		}
-		
-		return jsonObject;
+		String a = jsonObject.toString();
+		return a;
 	}
-	
 
-	@Configuration
-	public class WebMvcConfig implements WebMvcConfigurer {
-	
-		//web root가 아닌 외부 경로에 있는 리소스를 url로 불러올 수 있도록 설정
-	    //현재 localhost:8090/summernoteImage/1234.jpg
-	    //로 접속하면 C:/summernote_image/1234.jpg 파일을 불러온다.
-	    @Override
-	    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-	        registry.addResourceHandler("/summernoteImage/**")
-	                .addResourceLocations("file:///C:/summernote_image/");
-	        							 //맥북 유저는 file:///Users/macbook-id/summernote_image/ 로 수정! 
-	    }
-	}//톰캣 외부 링크 연결
-	
 //------------------------------------------------------------------------- SUMMER NOTE 	
 	
 	@RequestMapping(value = "/mypageS/productProc", method = RequestMethod.POST )
@@ -152,51 +142,61 @@ public class SellerProductCont {
 	public ModelAndView productM(HttpSession session, HttpServletRequest req) {
 		ModelAndView mav = new ModelAndView();
 		
-		mav.setViewName("/memberSeller/productM");
-		
 		String p_id = (String) session.getAttribute("s_p_id");
-		// p_id = "privatecurve";
-		int totalRowCount = sellerproductdao.totpro_cnt(p_id); // 총 개수
-		
-		//페이징설정 
-		int numPerPage = 7;
-		int pagePerBlock = 10;
-		
-		String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
-		if (pageNum == null) {
-			pageNum = "1";
+
+		if(p_id!=null) { //session아이디를 불러왔다면
+			mav.setViewName("/memberSeller/productM");
+			
+			int totalRowCount = sellerproductdao.totpro_cnt(p_id); // 총 개수
+			
+			//페이징설정 
+			int numPerPage = 7;
+			int pagePerBlock = 10;
+			
+			String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
+			if (pageNum == null) {
+				pageNum = "1";
+			}//if end
+			
+			int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
+			int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
+			int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
+			
+			// 페이지 수 
+			double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
+			int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
+			
+			double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
+			int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
+			int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
+			int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
+			
+			List list = null;
+	        if (totalRowCount > 0) {
+	        	list = sellerproductdao.productlist(startRow, endRow, p_id);
+	        } else {
+	            list = Collections.emptyList(); // 안 넣어도 상관 없음
+	        } // if end
+	        
+	        mav.addObject("total", totalRowCount);
+	        mav.addObject("productlist",list);
+	        mav.addObject("pageNum", currentPage);
+	
+	        mav.addObject("count", totalRowCount);
+	        mav.addObject("totalPage", totalPage);
+	        mav.addObject("startPage", startPage);
+	        mav.addObject("endPage", endPage);
+	        
+			return mav; 
+			
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
 		}//if end
 		
-		int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
-		int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
-		int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
-		
-		// 페이지 수 
-		double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
-		int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
-		
-		double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
-		int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
-		int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
-		int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
-		
-		List list = null;
-        if (totalRowCount > 0) {
-        	list = sellerproductdao.productlist(startRow, endRow, p_id);
-        } else {
-            list = Collections.emptyList(); // 안 넣어도 상관 없음
-        } // if end
-        
-        mav.addObject("total", totalRowCount);
-        mav.addObject("productlist",list);
-        mav.addObject("pageNum", currentPage);
-
-        mav.addObject("count", totalRowCount);
-        mav.addObject("totalPage", totalPage);
-        mav.addObject("startPage", startPage);
-        mav.addObject("endPage", endPage);
-        
-		return mav; 
 	}// end
 
 	
@@ -299,65 +299,85 @@ public class SellerProductCont {
 		
 		String p_id = (String) session.getAttribute("s_p_id");
 		
-		mav.setViewName("/memberSeller/orderM");
+		if(p_id!=null) { //session아이디를 불러왔다면
 		
-		//페이징
-		int totalRowCount = sellerproductdao.totord_cnt(p_id); // 총 개수
-		
-		//페이징설정 
-		int numPerPage = 10;
-		int pagePerBlock = 10;
-		
-		String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
-		if (pageNum == null) {
-			pageNum = "1";
+			mav.setViewName("/memberSeller/orderM");
+			
+			//페이징
+			int totalRowCount = sellerproductdao.totord_cnt(p_id); // 총 개수
+			
+			//페이징설정 
+			int numPerPage = 10;
+			int pagePerBlock = 10;
+			
+			String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
+			if (pageNum == null) {
+				pageNum = "1";
+			}//if end
+			
+			int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
+			int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
+			int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
+			
+			// 페이지 수 
+			double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
+			int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
+			
+			double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
+			int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
+			int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
+			int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
+			
+			List list = null;
+	        if (totalRowCount > 0) {
+	        	list = sellerproductdao.orderlist(startRow, endRow, p_id);
+	        } else {
+	            list = Collections.emptyList(); // 안 넣어도 상관 없음
+	        } // if end
+	        
+			//mav.addObject("productlist", sellerproductdao.productlist());
+	        mav.addObject("total", totalRowCount);
+	        mav.addObject("orderlist",list);
+	        mav.addObject("pageNum", currentPage);
+	
+	        mav.addObject("count", totalRowCount);
+	        mav.addObject("totalPage", totalPage);
+	        mav.addObject("startPage", startPage);
+	        mav.addObject("endPage", endPage);  
+			
+			return mav;
+			
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
 		}//if end
 		
-		int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
-		int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
-		int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
-		
-		// 페이지 수 
-		double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
-		int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
-		
-		double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
-		int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
-		int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
-		int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
-		
-		List list = null;
-        if (totalRowCount > 0) {
-        	list = sellerproductdao.orderlist(startRow, endRow, p_id);
-        } else {
-            list = Collections.emptyList(); // 안 넣어도 상관 없음
-        } // if end
-        
-		//mav.addObject("productlist", sellerproductdao.productlist());
-        mav.addObject("total", totalRowCount);
-        mav.addObject("orderlist",list);
-        mav.addObject("pageNum", currentPage);
-
-        mav.addObject("count", totalRowCount);
-        mav.addObject("totalPage", totalPage);
-        mav.addObject("startPage", startPage);
-        mav.addObject("endPage", endPage);
-        
-		
-		return mav;
 	}//end
 	
 	@RequestMapping("/mypageS/orderMdetail/{order_num}")
 	public ModelAndView orderMdetail(@PathVariable String order_num, HttpSession session) {
 		ModelAndView mav = new ModelAndView();
 		
-		mav.setViewName("/memberSeller/orderMdetail");
-		
 		String p_id = (String) session.getAttribute("s_p_id");
 
-		mav.addObject("orderdetailList",sellerproductdao.orderdetailList(order_num,p_id));
-		mav.addObject("orderdetail",sellerproductdao.orderdetail(order_num,p_id));
-		return mav;
+		if(p_id!=null) { //session아이디를 불러왔다면
+			mav.setViewName("/memberSeller/orderMdetail");
+		
+			mav.addObject("orderdetailList",sellerproductdao.orderdetailList(order_num,p_id));
+			mav.addObject("orderdetail",sellerproductdao.orderdetail(order_num,p_id));
+			return mav;
+			
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
+		}//if end
+		
 	}//end
 	
 	@RequestMapping(value = "/mypageS/orderstus/{order_num}", method = RequestMethod.POST)
@@ -381,51 +401,61 @@ public class SellerProductCont {
 								   ,@RequestParam(defaultValue = "") String pro_name) {
 		ModelAndView mav = new ModelAndView();
 		
-
-		mav.setViewName("/memberSeller/productM");
-		
 		String p_id = (String) session.getAttribute("s_p_id");
 
-		//페이징
-		int totalRowCount = sellerproductdao.totpro_cnt(p_id); // 총 개수
-		int numPerPage = 7;
-		int pagePerBlock = 10;
-		
-		String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
-		if (pageNum == null) {
-			pageNum = "1";
-		}//if end
-		
-		int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
-		int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
-		int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
-		
-		// 페이지 수 
-		double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
-		int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
-		
-		double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
-		int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
-		int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
-		int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
-		
-		List list = null;
-        if (totalRowCount > 0) {
-        	list = sellerproductdao.S_proSearch(startRow, endRow, p_id, pro_name);
-        } else {
-            list = Collections.emptyList(); // 안 넣어도 상관 없음
-        } // if end
-        
-        mav.addObject("total", totalRowCount);
-        mav.addObject("productlist",list);
-        mav.addObject("pageNum", currentPage);
+		if(p_id!=null) { //session아이디를 불러왔다면
 
-        mav.addObject("count", totalRowCount);
-        mav.addObject("totalPage", totalPage);
-        mav.addObject("startPage", startPage);
-        mav.addObject("endPage", endPage);
-		
-		return mav;
+			mav.setViewName("/memberSeller/productM");
+			
+	
+			//페이징
+			int totalRowCount = sellerproductdao.totpro_cnt(p_id); // 총 개수
+			int numPerPage = 7;
+			int pagePerBlock = 10;
+			
+			String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
+			if (pageNum == null) {
+				pageNum = "1";
+			}//if end
+			
+			int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
+			int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
+			int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
+			
+			// 페이지 수 
+			double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
+			int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
+			
+			double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
+			int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
+			int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
+			int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
+			
+			List list = null;
+	        if (totalRowCount > 0) {
+	        	list = sellerproductdao.S_proSearch(startRow, endRow, p_id, pro_name);
+	        } else {
+	            list = Collections.emptyList(); // 안 넣어도 상관 없음
+	        } // if end
+	        
+	        mav.addObject("total", totalRowCount);
+	        mav.addObject("productlist",list);
+	        mav.addObject("pageNum", currentPage);
+	
+	        mav.addObject("count", totalRowCount);
+	        mav.addObject("totalPage", totalPage);
+	        mav.addObject("startPage", startPage);
+	        mav.addObject("endPage", endPage);
+			
+			return mav;
+			
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
+		}//if end
 	}//end
 	
 	@RequestMapping(value = "/mypageS/ordersearch" )
@@ -435,51 +465,63 @@ public class SellerProductCont {
 		ModelAndView mav = new ModelAndView();
 		
 		String p_id = (String) session.getAttribute("s_p_id");
+
+		if(p_id!=null) { //session아이디를 불러왔다면
+
+			mav.setViewName("/memberSeller/orderM");
+			
+			//페이징
+			int totalRowCount = sellerproductdao.totord_cnt(p_id); // 총 개수
+			
+			//페이징설정 
+			int numPerPage = 10;
+			int pagePerBlock = 10;
+			
+			String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
+			if (pageNum == null) {
+				pageNum = "1";
+			}//if end
+			
+			int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
+			int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
+			int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
+			
+			// 페이지 수 
+			double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
+			int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
+			
+			double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
+			int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
+			int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
+			int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
+			
+			List list = null;
+	        if (totalRowCount > 0) {
+	        	list = sellerproductdao.S_ordSearch(startRow, endRow, p_id, order_num);
+	        } else {
+	            list = Collections.emptyList(); // 안 넣어도 상관 없음
+	        } // if end
+	        
+	        mav.addObject("total", totalRowCount);
+	        mav.addObject("orderlist",list);
+	        mav.addObject("pageNum", currentPage);
+	
+	        mav.addObject("count", totalRowCount);
+	        mav.addObject("totalPage", totalPage);
+	        mav.addObject("startPage", startPage);
+	        mav.addObject("endPage", endPage);
+	        
+			return mav;
 		
-		mav.setViewName("/memberSeller/orderM");
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
 		
-		//페이징
-		int totalRowCount = sellerproductdao.totord_cnt(p_id); // 총 개수
-		
-		//페이징설정 
-		int numPerPage = 10;
-		int pagePerBlock = 10;
-		
-		String pageNum = req.getParameter("pageNum");	// 현재 페이지값 받아오기
-		if (pageNum == null) {
-			pageNum = "1";
 		}//if end
 		
-		int currentPage = Integer.parseInt(pageNum);			// 현재 페이지
-		int startRow 	= (currentPage-1) * numPerPage + 1;		// 한 페이지 글 목록에서 시작하는 행
-		int endRow		= currentPage * numPerPage; 			// 한 페이지 글 목록에서 끝나는 행
-		
-		// 페이지 수 
-		double totcnt = (double)totalRowCount/numPerPage;		// 전체 페이지 수 (전체글개수 / 5개)
-		int totalPage = (int)Math.ceil(totcnt);					// Math.ceil : 소수점 올림
-		
-		double d_page = (double)currentPage/pagePerBlock;		// 현재 페이지 넘버 / 전체 페이지 수
-		int Pages = (int)Math.ceil(d_page) -1;					// 페이지 목록을 하나로 묶음? (1-10 목록은 1, 11-20 목록은 2)
-		int startPage = Pages*pagePerBlock +1;					// 페이지 목록(ex 1~10번페이지 / 11~20번 페이지)에서 시작하는 페이지 넘버 (10개씩이면 1,11,21···.)
-		int endPage = startPage + pagePerBlock -1;			    // 페이지 목록에서 마지막 페이지 넘버 (10개씩이면 10,20,30···.)
-		
-		List list = null;
-        if (totalRowCount > 0) {
-        	list = sellerproductdao.S_ordSearch(startRow, endRow, p_id, order_num);
-        } else {
-            list = Collections.emptyList(); // 안 넣어도 상관 없음
-        } // if end
-        
-        mav.addObject("total", totalRowCount);
-        mav.addObject("orderlist",list);
-        mav.addObject("pageNum", currentPage);
-
-        mav.addObject("count", totalRowCount);
-        mav.addObject("totalPage", totalPage);
-        mav.addObject("startPage", startPage);
-        mav.addObject("endPage", endPage);
-        
-		return mav;
 	}//end
 	
 	
