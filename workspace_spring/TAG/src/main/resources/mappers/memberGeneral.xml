@@ -11,7 +11,7 @@
 	<select id="select"  resultType="String" parameterType="kr.co.itwill.memberGeneral.MemberGeneralDTO" >
 		SELECT mem_grade
 		FROM member
-		WHERE m_id = #{m_id} AND m_pw = #{m_pw} AND mem_grade IN ('B', 'S')
+		WHERE m_id = #{m_id} AND m_pw = #{m_pw} AND mem_grade IN ('B', 'S', 'M')
 	</select>
 	
 	

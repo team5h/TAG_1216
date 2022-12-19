@@ -132,4 +132,18 @@
 	]]>
 </select>
 
+
+<select id="getFlagnum" parameterType="String" resultType="java.util.Map">
+	SELECT flagnum
+	FROM (
+		SELECT flagnum, O.c_no
+		FROM ticket_detail D LEFT JOIN ticket_order O
+							 ON D.tck_num = O.tck_num) AA
+	WHERE AA.c_no = #{c_no}
+</select>
+
+
+
+
+
 </mapper>

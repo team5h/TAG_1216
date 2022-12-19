@@ -86,4 +86,10 @@ public class ConcertDAO {
 		//System.out.println("22222222");
 		return sqlSession.selectOne("concert.earlybirdCheck", c_no);
 	}//earlybirdCheck() end
+	
+	
+// ---------------------------------------------------- [flagNum 가져오기 -다슬-]	
+	public List<Map<String, Object>> getFlagnum(String c_no) {
+		return sqlSession.selectList("concert.getFlagnum", c_no);
+	}//getFlagnum() end
 }//class end

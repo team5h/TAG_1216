@@ -487,13 +487,17 @@ ${mem_grade == null}
 				<input type="hidden" name="earlybird" value="${earlybird}" />
 				<!-- c_no hidden 값 -->
 				<input type="hidden" name="c_no" value="${concert.c_no}" />
-		    	<div id="mainContainer" style="--display: inline-block; float:left; overflow-y:scroll; height:540px; --margin-right:200px;">
+				<!-- c_title hidden 값 -->
+				<input type="hidden" name="title" value="${concert.title}" />
+				<!-- c_price hidden 값 -->
+				<input type="hidden" name="price" value="${concert.price}" />
+		    	<div id="mainContainer">
 					<!-- include 영역 시작 -->
 					<%@ include file="../tickets/mainContents.jsp" %>
 					<!-- include 영역 끝 -->
 				</div><!-- mainContainer end -->
 				
-				<div class="sideContainer" id="sideContainer" style="--display: inline-block; float:right; overflow-y:scroll; height:540px; width: 364px; --background:red;">
+				<div class="sideContainer" id="sideContainer">
 					<!-- include 영역 시작 -->
 					<%@ include file="../tickets/sideContents.jsp" %>
 					<!-- include 영역 끝 -->
@@ -660,6 +664,16 @@ $(document).ready(function(){
 	$("#goSale").css("display", "none"); //이전단계2
 	$("#goDlv").css("display", "inline-block;"); //다음단계1
 	$("#goFinish").css("display", "none"); //결제완료
+	
+
+	/* ---------------- */
+	
+	//팔린 좌석 비활성화하기
+	<c:forEach items="${flagnumList}" var="item">
+		//alert("${item.flagnum}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.
+		$("#btn${item.flagnum}").css('background', 'lightgrey');
+		$("#btn${item.flagnum}").attr('disabled', 'disabled');
+	</c:forEach>
 	
 });//ready() end
 
@@ -837,7 +851,6 @@ for(let i = 1; i < flagsZ.length; i++){ //Z구역 R등급, S등급, A등급
 
 
 
-
 //미니맵 1층 버튼을 누르면
 $("body").on('click', '#map1F', function(){ //map1F버튼 id받아오기
 	//MainContainer에서
@@ -893,6 +906,7 @@ function standAdd(SeatNum, section, flagNum){ //좌석번호, 구역이름, 버�
 		input += "'>";
 		$("#btn"+section+flagNum).addClass("on"); //#btnA+seatNo에 class="on" 추가
 		$("#panel").append(input); //<div id="panel">안에 <input class=input+section+flagNum></input> 생성
+		$("#panel").scrollTop($("#seatAddFormjsp").height());
 		
 		let input2="";
 		input2 += "<input type='text' class='input";
@@ -901,8 +915,15 @@ function standAdd(SeatNum, section, flagNum){ //좌석번호, 구역이름, 버�
 		input2 += "R석 1층-스탠딩"+section+"구역 입장번호-"+snum;
 		input2 += "'>";
 		$("#addedSeat").append(input2);
-		
 		countSeats(); //좌석수 계산하기
+		
+		let input3="";
+		input3 += "<input type='hidden' class='input";
+		input3 += 									section+flagNum;
+		input3 += "' name='flagnum' value='";
+		input3 += 							section+flagNum;
+		input3 += "'>";
+		$("#addedSeat").append(input3);
 	}else{ //좌석선택을 해제할 때
 		$("#btn"+section+flagNum).removeClass("on"); //#btn+seatNo에 class="on" 제거
 		$("input").remove(".input"+section+flagNum); //<input class=input+section+flagNum></input> 제거
@@ -951,6 +972,7 @@ function rseatAdd(SeatNum, section, row, flagNum){ //좌석번호, 구역이름,
 		input += "'>";
 		$("#btn"+section+flagNum).addClass("on"); //#btnA+seatNo에 class="on" 추가
 		$("#panel").append(input); //<div id="panel">안에 <input class=input+section+flagNum></input> 생성
+		$("#panel").scrollTop($("#seatAddFormjsp").height());
 		
 		let input2="";
 		input2 += "<input type='text' class='input";
@@ -960,6 +982,14 @@ function rseatAdd(SeatNum, section, row, flagNum){ //좌석번호, 구역이름,
 		input2 += "'>";
 		$("#addedSeat").append(input2);
 		countSeats(); //좌석수 계산하기
+		
+		let input3="";
+		input3 += "<input type='hidden' class='input";
+		input3 += 									section+flagNum;
+		input3 += "' name='flagnum' value='";
+		input3 += 							section+flagNum;
+		input3 += "'>";
+		$("#addedSeat").append(input3);
 	}else{ //좌석선택을 해제할 때
 		$("#btn"+section+flagNum).removeClass("on"); //#btn+seatNo에 class="on" 제거
 		$("input").remove(".input"+section+flagNum); //<span class=span+str></span> 제거

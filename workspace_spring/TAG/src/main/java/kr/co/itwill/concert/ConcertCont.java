@@ -213,6 +213,7 @@ public class ConcertCont {
 		mav.setViewName("concert/concertDetail");
 		mav.addObject("concert", concertDao.detailConcert(c_no));
 		mav.addObject("earlybird", concertDao.earlybirdCheck(c_no));
+		mav.addObject("flagnumList", concertDao.getFlagnum(c_no));
 		
 		return mav;
 	}//concertDetail() end

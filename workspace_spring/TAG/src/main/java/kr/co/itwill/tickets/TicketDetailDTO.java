@@ -5,6 +5,7 @@ public class TicketDetailDTO {
 	private String tck_num;
 	private String cseat;
 	private int price;
+	private String flagnum;
 	
 	public TicketDetailDTO() {}
 
@@ -40,10 +41,21 @@ public class TicketDetailDTO {
 		this.price = price;
 	}
 
+	public String getFlagnum() {
+		return flagnum;
+	}
+
+	public void setFlagnum(String flagnum) {
+		this.flagnum = flagnum;
+	}
+
 	@Override
 	public String toString() {
-		return "TicketDetailDTO [tdno=" + tdno + ", tck_num=" + tck_num + ", cseat=" + cseat + ", price=" + price + "]";
+		return "TicketDetailDTO [tdno=" + tdno + ", tck_num=" + tck_num + ", cseat=" + cseat + ", price=" + price
+				+ ", flagnum=" + flagnum + "]";
 	}
+
+	
 	
 
 }//class end
