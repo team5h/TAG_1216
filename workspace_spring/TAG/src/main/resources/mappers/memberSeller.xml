@@ -6,92 +6,129 @@
 
 <mapper namespace="memberSeller">
 
-<!-- [로그인] 로그인 성공/실패 -->
-<select id="select"  resultType="String" parameterType="kr.co.itwill.memberSeller.MemberSellerDTO" >
-	SELECT mem_grade
-	FROM seller
-	WHERE p_id = #{p_id} AND p_pw = #{p_pw} AND mem_grade IN ('B', 'S')
-</select>
+	<!-- [로그인] 로그인 성공/실패 -->
+	<select id="select"  resultType="String" parameterType="kr.co.itwill.memberSeller.MemberSellerDTO" >
+		SELECT mem_grade
+		FROM seller
+		WHERE p_id = #{p_id} AND p_pw = #{p_pw} AND mem_grade IN ('B', 'S')
+	</select>
+	
+	
+	<!-- [로그인] 아이디 중복 체크 -->
+	<select id="idCheckS" parameterType="String" resultType="int">
+		SELECT COUNT(p_id) 
+		FROM seller 
+		WHERE p_id= #{p_id}
+	</select>
+	
+	
+	<!-- [회원가입] 이메일 중복 체크 -->
+	<select id="emailScheck" parameterType="String" resultType="int">
+		SELECT COUNT(com_email) 
+		FROM seller 
+		WHERE com_email= #{com_email}
+	</select>
+	
+	
+	<!-- [회원가입] 회원등록 insert -->
+	<insert id="joinS" parameterType="kr.co.itwill.memberSeller.MemberSellerDTO">
+		INSERT INTO seller (p_id, p_pw, company, director, licence, com_zipcode, com_addr1, com_addr2, com_tel, com_email, bank, bank_num, regdate)
+		VALUES (
+				 #{p_id}
+				 ,#{p_pw}
+				 ,#{company}
+				 ,#{director}
+				 ,#{licence}
+				 ,#{com_zipcode}
+				 ,#{com_addr1}
+				 ,#{com_addr2}
+				 ,#{com_tel}
+				 ,#{com_email}
+				 ,#{bank}
+				 ,#{bank_num}
+				 ,(current_date)
+				)
+	</insert>
+	
+	<select id="qnalist" resultType="kr.co.itwill.QnA.QnADTO" parameterType="java.util.Map"> 
+		<![CDATA[
+		SELECT AA.*
+			FROM(
+			    SELECT @RNO := @RNO + 1 as r, CC.*
+			    FROM (
+			        SELECT q.q_no, qname, nickname, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus
+	                FROM qna q JOIN product p ON q.pro_no = p.pro_no
+	                           JOIN member m ON q.qname = m.m_id
+	                           left outer JOIN answer a ON a.q_no = q.q_no
+	                           JOIN seller s ON p.p_id = s.p_id
+	                WHERE a_stus = 'N' AND p.p_id = #{p_id}
+	                ORDER BY q_no ASC 
+			    ) CC, (SELECT @RNO := 0) BB 
+			 ORDER BY q_no ASC 
+			) AA 
+			WHERE r >= #{start} AND r <= #{end}
+		]]>
+	</select>
+	
+	
+	<insert id="answerInsert" parameterType="kr.co.itwill.Answer.AnswerDTO">
+		INSERT INTO answer (q_no, p_id, content, regdate)
+		VALUES (#{q_no},#{p_id},#{content},(CURRENT_TIMESTAMP)) 
+	</insert>
+	
+	<select id="answerOne" resultType="String">
+		SELECT content FROM answer WHERE a_no = #{a_no}
+	</select>
+	
+	<update id="a_stusUpdate">
+		UPDATE qna
+		SET a_stus = 'Y'
+		WHERE q_no = #{q_no}
+	</update>
+	
+	<select id="answerlist" resultType="kr.co.itwill.QnA.QnADTO" parameterType="java.util.Map"> 
+		<![CDATA[
+		SELECT AA.*
+			FROM(
+			    SELECT @RNO := @RNO + 1 as r, CC.*
+			    FROM (
+			        SELECT q.q_no, qname, nickname, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus,a.regdate as answerdate
+	                FROM qna q JOIN product p ON q.pro_no = p.pro_no
+	                           JOIN member m ON q.qname = m.m_id
+	                           left outer JOIN answer a ON a.q_no = q.q_no
+	                           JOIN seller s ON p.p_id = s.p_id
+	                WHERE a_stus = 'Y' AND p.p_id = #{p_id}
+	                ORDER BY q_no ASC 
+			    ) CC, (SELECT @RNO := 0) BB 
+			 ORDER BY q_no DESC 
+			) AA 
+			WHERE r >= #{start} AND r <= #{end}
+		]]>
+		
+	</select>
 
+	<select id="memberupdateS" resultType="kr.co.itwill.memberSeller.MemberSellerDTO" parameterType="String">
+		SELECT p_id, p_pw, company, director, licence, com_zipcode, com_addr1, com_addr2, com_tel, com_email, bank, bank_num
+		FROM seller
+		WHERE p_id=#{p_id}
+	</select>
+	
+	<update id="memberupdateSproc" parameterType="kr.co.itwill.memberSeller.MemberSellerDTO">
+		UPDATE seller
+		SET p_pw=#{p_pw}
+			,company=#{company}
+			,director=#{director}
+			,licence=#{licence}
+			,com_zipcode=#{com_zipcode}
+			,com_addr1=#{com_addr1}
+			,com_addr2=#{com_addr2}
+			,com_tel=#{com_tel}
+			,com_email=#{com_email}
+			,bank=#{bank}
+			,bank_num=#{bank_num}
+		WHERE p_id=#{p_id}
+	</update>
 
-<!-- [로그인] 아이디 중복 체크 -->
-<select id="idCheckS" parameterType="String" resultType="int">
-	SELECT COUNT(p_id) 
-	FROM seller 
-	WHERE p_id= #{p_id}
-</select>
-
-
-<!-- [회원가입] 이메일 중복 체크 -->
-<select id="emailScheck" parameterType="String" resultType="int">
-	SELECT COUNT(com_email) 
-	FROM seller 
-	WHERE com_email= #{com_email}
-</select>
-
-
-<!-- [회원가입] 회원등록 insert -->
-<insert id="joinS" parameterType="kr.co.itwill.memberSeller.MemberSellerDTO">
-	INSERT INTO seller (p_id, p_pw, company, director, licence, com_zipcode, com_addr1, com_addr2, com_tel, com_email, bank, bank_num, regdate)
-	VALUES (
-			 #{p_id}
-			 ,#{p_pw}
-			 ,#{company}
-			 ,#{director}
-			 ,#{licence}
-			 ,#{com_zipcode}
-			 ,#{com_addr1}
-			 ,#{com_addr2}
-			 ,#{com_tel}
-			 ,#{com_email}
-			 ,#{bank}
-			 ,#{bank_num}
-			 ,(current_date)
-			)
-</insert>
-
-<select id="qnalist" resultType="kr.co.itwill.QnA.QnADTO" parameterType="java.util.Map"> 
-	<![CDATA[
-	SELECT AA.*
-		FROM(
-		    SELECT @RNO := @RNO + 1 as r, CC.*
-		    FROM (
-		        SELECT q.q_no, qname, nickname, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus
-                FROM qna q JOIN product p ON q.pro_no = p.pro_no
-                           JOIN member m ON q.qname = m.m_id
-                           left outer JOIN answer a ON a.q_no = q.q_no
-                           JOIN seller s ON p.p_id = s.p_id
-                WHERE a_stus = 'N' AND p.p_id = #{p_id}
-                ORDER BY q_no ASC 
-		    ) CC, (SELECT @RNO := 0) BB 
-		 ORDER BY q_no ASC 
-		) AA 
-		WHERE r >= #{start} AND r <= #{end}
-	]]>
-</select>
-
-
-<insert id="answerInsert" parameterType="kr.co.itwill.Answer.AnswerDTO">
-	INSERT INTO answer (q_no, p_id, content, regdate)
-	VALUES (#{q_no},#{p_id},#{content},(CURRENT_TIMESTAMP)) 
-</insert>
-
-<select id="answerOne" resultType="String">
-	SELECT content FROM answer WHERE a_no = #{a_no}
-</select>
-
-<update id="a_stusUpdate">
-	UPDATE qna
-	SET a_stus = 'Y'
-	WHERE q_no = #{q_no}
-</update>
-
-<select id="answerlist" resultType="kr.co.itwill.QnA.QnADTO" parameterType="java.util.Map"> 
-	<![CDATA[
-	SELECT AA.*
-		FROM(
-		    SELECT @RNO := @RNO + 1 as r, CC.*
-		    FROM (
 		        SELECT q.q_no, qname, nickname, content, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus,a.regdate as answerdate
                 FROM qna q JOIN product p ON q.pro_no = p.pro_no
                            JOIN member m ON q.qname = m.m_id
@@ -176,5 +213,6 @@
 	    ) RESULT
 	WHERE rnum between 1 and 2
 </select>
+
 
 </mapper>

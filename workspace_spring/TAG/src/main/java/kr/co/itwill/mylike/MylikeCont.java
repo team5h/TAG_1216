@@ -36,10 +36,7 @@ public class MylikeCont {
 		//나중에 소스 취합할때 주석 지우고 이부분으로 하면 됨
 		String s_m_id=(String)session.getAttribute("s_m_id");		
 		//String s_m_id="daseul";//소스 취합할때 이 줄 삭제하고, 위줄에 있는 거로 해야 함
-		
-		
-		
-		
+    
 		ModelAndView mav=new ModelAndView();
 		mav.setViewName("mypage/mylike");
 		
@@ -48,9 +45,6 @@ public class MylikeCont {
 		
 		List<Map<String, String>> list_c=mylikeDao.list_c(s_m_id);
 		mav.addObject("list_c", list_c);
-		
-		List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
-		mav.addObject("list_p", list_p);
 		
 		
 		//공연 이미지만 추출하기
@@ -61,7 +55,7 @@ public class MylikeCont {
 		//DB에서 가져온 정보
 		//{like_li=1, edit=8세 이상 / prep.png / 전R석, like_cd=C, lno=5, m_id=daseul}
 		//{like_li=4, edit=만 7세이상 / Maksim.jpg / 전 R석 / 가격 R132000 /  22.12.24 ~ 22.12.25, like_cd=C, lno=4, m_id=daseul}
-		//System.out.println("------"+list_c.size()); //DB에서 가져온 행의 갯수
+		//System.out.println("------"+list_c.size()); //DB에서 가져온 행의 개수
 		
 		
 		//DB에서 가져온 정보(list_c)에서 "prep.png"정보만 추출하기
@@ -91,7 +85,7 @@ public class MylikeCont {
 			//	System.out.println("#" + d[j].trim() + "#");
 			//}
 			
-			// /기호 앞뒤의 공백을 제거한후 imglist_c변수에 추가하기(50행 변수 참조)
+			// /기호 앞뒤의 공백을 제거한후 imglist_c변수에 추가하기(50행 변수 참조) //52행
 			//imglist_c.add(d[1].trim());
 		//}//for end
 		
@@ -99,16 +93,35 @@ public class MylikeCont {
 		//-------------------------------------------------------------------------
 		
 		
-		//List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
-		//mav.addObject("list_p", list_p);
+		List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
+		mav.addObject("list_p", list_p);
 		
+		int conCnt=mylikeDao.conCnt(s_m_id);
+		mav.addObject("conCnt", conCnt);
 		
+		int proCnt=mylikeDao.proCnt(s_m_id);
+		mav.addObject("proCnt", proCnt);
 		
 		return mav;
 		
 	}//list() end
 	
 	
+	@RequestMapping("mypage/mylike/all")
+	public ModelAndView all(HttpSession session) {
+		String s_m_id=(String)session.getAttribute("s_m_id");
+		
+		ModelAndView mav=new ModelAndView();
+		mav.setViewName("mypage/all");
+		
+		List<Map<String, String>> list_c=mylikeDao.list_c(s_m_id);
+		mav.addObject("list_c", list_c);
+		
+		List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
+		mav.addObject("list_p", list_p);
+		
+		return mav;
+	}//all() end
 	
 	
 	

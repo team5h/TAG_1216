@@ -1,5 +1,6 @@
 package kr.co.itwill.notice;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,13 +18,22 @@ public class NoticeDAO {
 	@Autowired
 	SqlSession sqlSession;
 	
+	
 	public void insert(NoticeDTO notice) {
 		sqlSession.insert("notice.insert", notice);
 	}//insert() end
 	
-	public List<NoticeDTO> list() {
-		return sqlSession.selectList("notice.list");
+	public List<NoticeDTO> list(int start, int end) {
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("start", start);
+		map.put("end", end);
+		
+		return sqlSession.selectList("notice.list", map);
 	}//list() end
+	
+	public int total() {
+		return sqlSession.selectOne("notice.total");
+	}//total() end
 
 	public NoticeDTO detail(int n_no) {		
 		return sqlSession.selectOne("notice.detail", n_no);
@@ -41,6 +51,8 @@ public class NoticeDAO {
 	public void delete(int n_no) {
 		sqlSession.delete("notice.delete", n_no);
 	}//delete() end
+	
+	
 	
 	
 }//class end

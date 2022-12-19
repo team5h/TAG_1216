@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import kr.co.itwill.Answer.AnswerDTO;
 import kr.co.itwill.QnA.QnADTO;
+import kr.co.itwill.memberGeneral.MemberGeneralDTO;
 
 @Repository
 public class MemberSellerDAO {
@@ -108,6 +109,18 @@ HashMap<String, Object> map  = new HashMap<>();
 	public int qnaY_cnt (String p_id) {
 		return sqlSession.selectOne("memberSeller.qnaY_cnt",p_id);
 	}
+	
+	
+	// 회원정보수정
+	public MemberSellerDTO memberupdateS(String p_id){
+		return sqlSession.selectOne("memberSeller.memberupdateS", p_id);
+	}//memberupdateS() end
+	
+	
+	// 회원정보수정 mappers
+	public int memberupdateSproc(MemberSellerDTO dto){
+		return sqlSession.update("memberSeller.memberupdateSproc", dto);
+	}//memberupdateSproc() end 
 	
 }//class end
 

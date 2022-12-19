@@ -43,12 +43,12 @@ public class MemberGeneralDAO {
 	public MemberGeneralDTO memberupdateG(String m_id){
 		//System.out.println(m_id);
 		return sqlSession.selectOne("memberGeneral.memberupdateG", m_id);
-	}//memberupdateG end
+	}//memberupdateG() end
 	
 	
 	// 회원정보수정 mappers
 	public int memberupdateGproc(MemberGeneralDTO dto){
 		return sqlSession.update("memberGeneral.memberupdateGproc", dto);
-	}//memberupdateGproc end 
+	}//memberupdateGproc() end 
 	
 }//class end
