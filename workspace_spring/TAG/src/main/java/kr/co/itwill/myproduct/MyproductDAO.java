@@ -1,5 +1,6 @@
 package kr.co.itwill.myproduct;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,5 +30,8 @@ public class MyproductDAO {
 		System.out.println("도착?");
 		return sqlSession.selectList("myproduct.detail", order_num);
 	}//detail() end
+	
+	
+	
 	
 }//class end

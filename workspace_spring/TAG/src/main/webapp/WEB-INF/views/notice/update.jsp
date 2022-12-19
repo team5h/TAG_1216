@@ -3,6 +3,20 @@
 <%@ include file="../header.jsp" %>
 <%@ include file="ssi.jsp" %>
 
+<style>
+   .dropdown-toggle:after {
+       display: none;
+       margin-left: 0.255em;
+       vertical-align: 0.255em;
+       content: "";
+       border-top: 0.3em solid;
+       border-right: 0.3em solid transparent;
+       border-bottom: 0;
+       border-left: 0.3em solid transparent;
+   }
+</style>
+
+
 <script>
 	function notice_updateProc(){
 		if(confirm("수정하시겠습니까?")){
@@ -12,6 +26,7 @@
 	}//notice_update() end
 	
 </script>
+
 <style>
 	.dropdown-toggle:after {
 	    display: none;
@@ -24,6 +39,21 @@
 	    border-left: 0.3em solid transparent;
 	}
 </style>
+
+
+<style>
+   .dropdown-toggle:after {
+       display: none;
+       margin-left: 0.255em;
+       vertical-align: 0.255em;
+       content: "";
+       border-top: 0.3em solid;
+       border-right: 0.3em solid transparent;
+       border-bottom: 0;
+       border-left: 0.3em solid transparent;
+   }
+</style>
+
 <!-- 본문영역 -->
 <br>
 <br>

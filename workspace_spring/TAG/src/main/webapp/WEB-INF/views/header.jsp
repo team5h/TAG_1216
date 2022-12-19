@@ -307,8 +307,7 @@
     		<div class="container" style="padding-top:100px; max-width: 1350px;">
       		<!-- 	<div class="align-items-center"> -->
         	
-        	
-	
+
 	
 	
 	

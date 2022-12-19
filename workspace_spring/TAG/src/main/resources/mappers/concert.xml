@@ -7,7 +7,7 @@
 <mapper namespace="concert">
 
 
-<!-- [ 콘서트목록 - 최신순 ] -->	
+	<!-- [ 콘서트목록 - 최신순 ] -->	
 	<select id="concertListLatest" resultType="kr.co.itwill.concert.ConcertDTO" parameterType="java.util.Map">	
 		<![CDATA[
 			SELECT AA.*
@@ -16,16 +16,15 @@
 				FROM (
 						SELECT  c_no, title, date, start_time, end_time, open_eb, close_eb, open_tck, close_tck, genre, j_id, 						com_name, dlv_date, likecnt, postername, watch_age, price, edit
 						FROM concert
-						ORDER BY date DESC
 				) CC, (SELECT @RNO := 0) BB 
-			ORDER BY c_no DESC
+			ORDER BY date DESC
 			) AA 
 			WHERE r >= #{start} AND r <= #{end}
 		]]>
 	</select> 
 	
 	
-<!-- [ 콘서트목록 - 개수 전체] -->
+	<!-- [ 콘서트목록 - 개수 전체] -->
 	<select id="concertTotal" resultType="int">
 		SELECT COUNT(*)
 		FROM concert
@@ -34,7 +33,7 @@
 	
 	
 	
-<!-- 지난 콘서트 -->
+	<!-- 지난 콘서트 -->
 	<select id="pastConcertList" resultType="kr.co.itwill.concert.ConcertDTO" parameterType="java.util.Map">	
 		<![CDATA[
 		SELECT AA.*
@@ -45,16 +44,15 @@
 					   com_name, dlv_date, likecnt, postername, watch_age, price, edit
 				FROM concert
 				WHERE date(`date`) <= date_format(CURDATE(), '%Y%m%d')
-				ORDER BY date DESC
 			) CC, (SELECT @RNO := 0) BB 
-		ORDER BY c_no DESC
+		ORDER BY date DESC
 		) AA 
 		WHERE r >= #{start} AND r <= #{end}
 		]]>
 	</select> 
 
 
-<!-- 지난 콘서트 개수 -->
+	<!-- 지난 콘서트 개수 -->
 	<select id="pastConcertTotal" resultType="int">
 		<![CDATA[
 		SELECT count(*)
@@ -64,8 +62,7 @@
 	</select> 
 	
 	
-	
-<!-- 예정 콘서트 -->
+	<!-- 예정 콘서트 -->
 	<select id="yejungConcertList" resultType="kr.co.itwill.concert.ConcertDTO" parameterType="java.util.Map">	
 		<![CDATA[
 		SELECT AA.*
@@ -76,16 +73,15 @@
 					   com_name, dlv_date, likecnt, postername, watch_age, price, edit
 				FROM concert
 				WHERE date(`date`) >= date_format(CURDATE(), '%Y%m%d')
-				ORDER BY date 
 			) CC, (SELECT @RNO := 0) BB 
-		ORDER BY c_no 
+		ORDER BY date 
 		) AA 
 		WHERE r >= #{start} AND r <= #{end}
 		]]>
 	</select> 
 
 
-<!-- 예정 콘서트 개수 -->
+	<!-- 예정 콘서트 개수 -->
 	<select id="yejungConcertTotal" resultType="int">
 		<![CDATA[
 		SELECT count(*)
@@ -95,7 +91,7 @@
 	</select> 
 	
 	
-<!-- 콘서트 검색 -->
+	<!-- 콘서트 검색 -->
 	<select id="searchConcert" resultType="kr.co.itwill.concert.ConcertDTO" parameterType="String">
 		SELECT c_no, title, date, start_time, end_time, open_eb, close_eb, open_tck, close_tck, genre, j_id, 						
 			   com_name, dlv_date, likecnt, postername, watch_age, price, edit
@@ -105,8 +101,7 @@
 	</select> 
 	
 	
-	
-<!-- 콘서트 상세보기 detail -->
+	<!-- 콘서트 상세보기 detail -->
 	<select id="detailConcert" resultType="java.util.Map">
 		SELECT c_no, title, date, start_time, end_time, open_eb, close_eb, open_tck, close_tck, genre, j_id, com_name, dlv_date, likecnt, postername, watch_age, price, edit
 		FROM concert
@@ -123,13 +118,66 @@
 	]]>
 </select> -->
 
+	<!-- 오늘이 선예매 기간인지? ** 이거 now() 안먹힐 수 있어서 date_format(CURDATE(), '%Y%m%d') 이걸로 변경해야함 ** --> 
+	<select id="earlybirdCheck" parameterType="String" resultType="int">
+		<![CDATA[
+			select COUNT(*) 
+			from concert
+			where now() >= open_eb and now() <= close_eb and c_no = #{c_no}
+		]]>
+	</select>
+	
 
-<select id="earlybirdCheck" parameterType="String" resultType="int">
-	<![CDATA[
-		select COUNT(*) 
-		from concert
-		where now() >= open_eb and now() <= close_eb and c_no = #{c_no}
-	]]>
+
+	<!-- 공연 좋아요 conut +1 -->
+	<update id="likecntInc" parameterType="kr.co.itwill.concert.ConcertDTO">
+		UPDATE concert 
+		SET likecnt = likecnt + 1 
+		WHERE c_no = #{c_no}
+	</update>
+	
+	
+	<!-- 내 공연 좋아요 -->
+	<select id="likechk" parameterType="java.util.Map" resultType="int">
+		SELECT COUNT(lno) 
+		FROM member_like
+		WHERE m_id = #{m_id} AND like_li = #{c_no} AND like_cd = 'C' 
+	</select>
+	
+
+	<!-- 공연 좋아요 insert (강선) --> 
+	<insert id="myLikeInsert" parameterType="java.util.Map" >
+		INSERT INTO member_like(m_id, like_cd, like_li)
+		VALUES (#{m_id}, 'C', #{c_no})
+	</insert>
+	
+	
+	<!-- 공연 좋아요 conut -1 -->
+	<update id="likecntDec" parameterType="kr.co.itwill.concert.ConcertDTO">
+		UPDATE concert 
+		SET likecnt = likecnt -1 
+		WHERE c_no = #{c_no}
+	</update>
+	
+	<!-- 공연 좋아요 마이페이지 Delete -->
+	<delete id="myLikeDelete" parameterType="java.util.Map">
+		DELETE FROM member_like
+		WHERE m_id = #{m_id} AND like_li = #{c_no}
+	</delete>
+
+
+
+<select id="getFlagnum" parameterType="String" resultType="java.util.Map">
+	SELECT flagnum
+	FROM (
+		SELECT flagnum, O.c_no
+		FROM ticket_detail D LEFT JOIN ticket_order O
+							 ON D.tck_num = O.tck_num) AA
+	WHERE AA.c_no = #{c_no}
 </select>
+
+
+
+
 
 </mapper>

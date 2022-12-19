@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+
 import kr.co.itwill.QnA.QnADTO;
+
+import kr.co.itwill.concert.ConcertDTO;
 
 @Controller
 public class ProductCont {
@@ -40,7 +43,7 @@ public class ProductCont {
     	
     	//System.out.println(req.getParameter("category"));
     	String category = req.getParameter("category");// A C M P
-    	
+ 
     	
         ModelAndView mav = new ModelAndView();
         mav.setViewName("product/list");
@@ -87,6 +90,8 @@ public class ProductCont {
             list = Collections.emptyList(); // 안 넣어도 상관 없음
         } // if end
     	
+        //System.out.println(productDao.list(startRow, endRow));
+        
  	    mav.addObject("total", totalRowCount);
  	    mav.addObject("category", category);
  	    mav.addObject("categoryAll", productDao.categoryAll());
@@ -187,7 +192,7 @@ public class ProductCont {
 
 	
 
-//  [상품리스트 - 음반 카테고리] 시작  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
+//  [상품리스트 - 음반 카테고리] 시작  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - //
     
 	@RequestMapping("/music")
     public ModelAndView music(String category) {
