@@ -8,10 +8,23 @@
 		VALUES (#{subject}, #{edit}, (current_date))
 	</insert>
 	
-	<select id="list" resultType="kr.co.itwill.notice.NoticeDTO">
-		SELECT n_no, subject, edit, regdate
-		FROM notice
-		ORDER BY n_no DESC
+	<select id="list" resultType="kr.co.itwill.notice.NoticeDTO" parameterType="int">
+		<![CDATA[
+		SELECT AA.*
+		FROM(
+		    SELECT @RNO := @RNO + 1 as r, CC.*
+		    FROM (
+		        SELECT n_no, subject, edit, regdate
+		        FROM notice, (SELECT @RNO := 0) BB
+		        ORDER BY n_no DESC
+		    ) CC
+		) AA 
+		WHERE r >= #{start} AND r <= #{end}
+		]]>
+	</select>
+	
+	<select id="total" resultType="int">
+		SELECT COUNT(*) FROM notice
 	</select>
 	
 	<select id="detail" resultType="kr.co.itwill.notice.NoticeDTO" parameterType="int">

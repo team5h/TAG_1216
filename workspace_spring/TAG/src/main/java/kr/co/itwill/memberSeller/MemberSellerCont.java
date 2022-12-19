@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import kr.co.itwill.Answer.AnswerDTO;
+import kr.co.itwill.memberGeneral.MemberGeneralDTO;
 
 @Controller
 public class MemberSellerCont {
@@ -319,4 +320,36 @@ public class MemberSellerCont {
 		//System.out.println(dto.getA_no());
 		return memberSellerDao.answerupdate(dto);
 	}//end
+	
+	@RequestMapping("/mypageS/update")
+	public ModelAndView memberupdateS(HttpSession session) {
+		String s_p_id=(String)session.getAttribute("s_p_id");		
+		ModelAndView mav=new ModelAndView();
+		mav.setViewName("memberSeller/updateS");
+		
+		MemberSellerDTO dto=memberSellerDao.memberupdateS(s_p_id);
+		mav.addObject("dto", dto);
+		
+		return mav;
+		
+	}//memberupdateS() end
+	
+	
+	@RequestMapping(value = "/memberupdateSproc", method = RequestMethod.POST)
+	public String memberupdateSproc( MemberSellerDTO dto, 
+							 HttpServletRequest req, 
+							 HttpServletResponse resp)throws Exception{
+		
+		int cnt = memberSellerDao.memberupdateSproc(dto);
+		if(cnt == 1) { //수정 성공
+		   req.setAttribute("msg", "수정이 완료되었습니다.");
+		   req.setAttribute("url", "/home");
+		}else{
+			req.setAttribute("msg", "수정 실패했습니다.");
+		}//if end
+		
+		return "memberSeller/alert";
+		
+	}//memberupdateGproc() end
+	
 }//class end 

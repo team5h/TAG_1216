@@ -11,19 +11,31 @@
 	</select>
 	
 	<select id="list_c" resultType="java.util.Map" parameterType="String">
-		SELECT lno, m_id, like_cd, like_li, CC.postername
+		SELECT lno, m_id, like_cd, like_li, CC.postername, CC.title
 		FROM member_like MM join concert CC
 		ON MM.like_li=CC.c_no
 		WHERE m_id=#{s_m_id} AND like_cd='C'
+		LIMIT 0, 3
 	</select>
 	
 	<select id="list_p" resultType="java.util.Map" parameterType="String">
-		SELECT lno, m_id, like_cd, like_li, PP.postername
+		SELECT lno, m_id, like_cd, like_li, PP.postername, PP.pro_name
 		FROM member_like MM join product PP
 		ON MM.like_li=PP.pro_no
 		WHERE m_id=#{s_m_id} AND like_cd='P'
+		LIMIT 0, 3
 	</select>
 	
+	<select id="conCnt" resultType="int" parameterType="String">
+		SELECT count(*)
+		FROM member_like
+		WHERE m_id=#{s_m_id} AND like_cd='C'
+	</select>
 	
+	<select id="proCnt" resultType="int" parameterType="String">
+		SELECT count(*)
+		FROM member_like
+		WHERE m_id=#{s_m_id} AND like_cd='P'
+	</select>
 	
 </mapper>

@@ -2,15 +2,28 @@
 
 <%@ include file="../header.jsp" %>
 
-
-<!-- 본문 시작 -->
 <style>
-	.leftcontent, .rightcontent, .box {
-		border:1px solid black;
+	.leftcontent {
+		float: left;
+		width: 15%;
+		margin-right: 5%;
+		height: 100%;
 	}
-	.leftcontent div, .rightcontent {
-		padding:10px;
+	
+	.rightcontent {
+		float: right;
+		width: 80%;
+		height: 100%;		
 	}
+
+	.leftcontent, .rightcontent, .box { border-top: 1px solid black; }
+	
+	.leftcontent, .rightcontent { border-bottom: 1px solid black; }
+	
+	.leftcontent div, .rightcontent { padding: 10px; }
+	
+	.box { margin-top: 10%; }
+	
 	.clickInfo {
 		text-align: center;
 		margin: 10px;
@@ -19,41 +32,41 @@
 		animation-duration: 3s;
 		animation-iteration-count: infinite;
 	}
+	
 	@keyframes blink {
 		50% {opacity: 0;}
 	}
 </style>
 
+<!-- 본문 시작 -->
+
 <div class="title">
 	<h3 style="text-align: center;">티켓 예매내역</h3>
 </div>
-<div></div>
 
-<div class="leftcontent" style="float:left; width:15%; margin-right:5%; height:100%;">
-   <div><b>${s_m_id}</b> 님</div>
-   <div><a href="/mypage/memberupdateG">회원 정보 수정</a></div>
-   <div class="box">
-      <div><b>MY티켓</b>
-         <div><a href="/mypage/myticket">- 예매 확인 / 취소</a></div>   
-      </div>
-      <div><b>MY상품</b>
-         <div><a href="/mypage/myproduct">- 상품 구매내역</a></div>   
-         <div><a href="#">- 나의 문의내역</a></div>
-      </div>
-      <div><b>좋아요</b>
-         <div><a href="/mypage/mylike">- 관심 공연 / 관심 상품</a></div>
-      </div>
-      <div><b>MY쿠폰 / MY포인트</b>
-         <div><a href="/couponDetail/detail">- 보유 쿠폰</a></div>
-         <div><a href="/pointDetail/detail">- 보유 포인트</a></div>
-      </div>
-   </div>
-
+<div class="leftcontent">
+	<div><b>${s_m_id}</b> 님</div>
+	<div><a href="/mypage/memberupdateG">회원 정보 수정</a></div>
+	<div class="box">
+		<div><b>MY티켓</b>
+			<div><a href="/mypage/myticket">- 예매 확인 / 취소</a></div>	
+		</div>
+		<div><b>MY상품</b>
+			<div><a href="/mypage/myproduct">- 상품 구매내역</a></div>	
+			<div><a href="/mypage/myqna">- 나의 문의내역</a></div>
+		</div>
+		<div><b>좋아요</b>
+			<div><a href="/mypage/mylike">- 관심 공연 / 관심 상품</a></div>
+		</div>
+		<div><b>MY쿠폰 / MY포인트</b>
+			<div><a href="/couponDetail/detail">- 보유 쿠폰</a></div>
+			<div><a href="/pointDetail/detail">- 보유 포인트</a></div>
+		</div>
+	</div>
 </div><!-- leftcontent end -->
 
 
-<div class="rightcontent" style="float:right; width:80%; height:100%;"> 
-	<div></div>
+<div class="rightcontent">
 	<div class="myticketList">
 		<p class="clickInfo">상세내역을 보고싶으시면 예매번호를 클릭해주세요!</p>
 		<table class="table table-hover">

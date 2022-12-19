@@ -21,13 +21,20 @@ public class MylikeDAO {
 		return sqlSession.selectList("mylike.list", s_m_id);
 	}//list() end
 	
-	
 	public List<Map<String, String>> list_c(String s_m_id){
 		return sqlSession.selectList("mylike.list_c", s_m_id);
-	}
+	}//list_c() end
 
 	public List<Map<String, String>> list_p(String s_m_id){
 		return sqlSession.selectList("mylike.list_p", s_m_id);
-	}
+	}//list_p() end
+	
+	public int conCnt(String s_m_id) {
+		return sqlSession.selectOne("mylike.conCnt", s_m_id);
+	}//conCnt() end
+	
+	public int proCnt(String s_m_id) {
+		return sqlSession.selectOne("mylike.proCnt", s_m_id);
+	}//conCnt() end
 	
 }//class end

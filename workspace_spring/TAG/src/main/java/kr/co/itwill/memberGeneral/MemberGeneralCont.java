@@ -187,7 +187,9 @@ public class MemberGeneralCont {
 		MemberGeneralDTO dto=memberGeneralDao.memberupdateG(s_m_id);
 		//System.out.println(dto);
 		mav.addObject("dto", dto);
+		
 		return mav;
+		
 	}//memberupdateG() end
 	
 	
@@ -203,7 +205,6 @@ public class MemberGeneralCont {
 		}else{
 			req.setAttribute("msg", "수정 실패했습니다.");
 		}//if end
-		
 		
 		return "memberGeneral/alert";
 		

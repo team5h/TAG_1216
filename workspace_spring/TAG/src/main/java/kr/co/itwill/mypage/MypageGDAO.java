@@ -27,7 +27,7 @@ public class MypageGDAO {
 		return sqlSession.selectOne("mypageG.orderCount", s_m_id);
 	}//orderCount() end
 	
-	public Map<String, Object> couponCnt(String s_m_id){
+	public int couponCnt(String s_m_id){
 		return sqlSession.selectOne("mypageG.couponCnt", s_m_id);
 	}//couponCnt() end
 	
@@ -39,11 +39,8 @@ public class MypageGDAO {
 		return sqlSession.selectOne("mypageG.tckCount", s_m_id);
 	}//tckCount() end
 
-	
-	
 	public int ptTotal(String s_m_id) {
 		return sqlSession.selectOne("mypageG.ptTotal", s_m_id);
 	}//tckCount() end
-	
 	
 }//class end
