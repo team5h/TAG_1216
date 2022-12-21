@@ -45,12 +45,12 @@ body {
   background-color: rgba(18, 148, 127, 0.05); }
 
 a {
-  color: #b84592;
+  color: lightgreen;
   -webkit-transition: .3s all ease;
   -o-transition: .3s all ease;
   transition: .3s all ease; }
   a:hover {
-    color: #b84592;
+    color: lightgreen;
     text-decoration: none; }
 
 ::-moz-selection {

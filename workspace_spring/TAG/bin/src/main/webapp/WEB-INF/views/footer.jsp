@@ -10,7 +10,7 @@
       <!-- 푸터 -->
 
 	<div class="site-footer" style="clear: both;">
-		<div class="container" >
+		<div class="container" style="max-width: 1350px;" >
 				<!-- <div class="col-12 copyright"> -->
 					<p>CONTACT US 
 						<br>+84 02.6255.8002</p> 

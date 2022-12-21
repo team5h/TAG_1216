@@ -1,19 +1,139 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="fn"   uri="http://java.sun.com/jsp/jstl/functions"%>
+<script src="https://kit.fontawesome.com/698fcd5feb.js" crossorigin="anonymous"></script>
+
+<style>
+
+.barBtn{
+	padding-left:450px;
+	height:40px;
+}
+
+.barBtn .bar1{
+	margin-left:-200px;
+	background:#99ff99;
+	color: black;
+	border-radius: 10px 50px 50px 10px;
+	border: 3px solid white;
+}
+
+.barBtn .bar2{
+	margin-left:-200px;
+	background:black;
+	color: white;
+	border-radius: 10px 50px 50px 10px;
+	border: 3px solid white;
+}
+
+.barBtn .bar3{
+	margin-left:10px;
+	background:black;
+	color: white;
+	border-radius: 10px 50px 50px 10px;
+	border: 3px solid white;
+}
+
+.stageBar {
+	height:60px;
+	background: lightgrey;
+	text-align:center;
+	padding: auto;
+	margin-right:50px;
+}
+
+.stageBar b{
+	font-size:36px;
+	color:gray;
+}
+
+
+#ticketSalejsp p{
+	font-size:12px;
+}
+
+#ticketSalejsp b{
+	font-size:12px;
+}
+
+/* 테이블 */
+.stb {
+	width:740px;
+	margin-left:40px;
+	margin-top:3px;
+	font-size:14px;
+	align:center;
+}
+
+.stb td, .stb th {
+	padding:2px;
+	text-align:center;
+}
+
+
+.stb select {
+    width: 115px;
+	border-bottom: 1px solid black;
+    font-size: 14px;
+}
+
+.stb input {
+    width: 115px;
+    text-align:center;
+    font-size: 14px;
+}
+
+
+
+.ktb, .jtb {
+	border-collapse:collapse;
+	width: 600px;
+	margin-top:3px;
+	margin-bottom:3px;
+}
+
+.ktb td, .jtb td {
+    border: 1px solid gray;
+    line-height:25px;
+    padding:2px;
+    padding-left:6px;
+    font-size:10px;
+}
+
+
+
+
+</style>
+
+
+
+
+
+
 <div id="map1Fjsp">
-	<h2>좌석선택-가격할인-배송현장수령</h2>
-	<h4>스탠딩 1층</h4>
+	<!-- <h2>좌석선택-가격할인-배송현장수령</h2> -->
+	<div class="barBtn">
+	    <button type="button" class="btn bar3">수령방법</button>
+	    <button type="button" class="btn bar2">할인선택</button>
+	    <button type="button" class="btn bar1">좌석선택</button>
+	</div>
+	<br>
+	<h5>스탠딩 1층</h5>
 	<p>스탠딩은 실제 좌석과 다르며 예매시 지정하는 번호가 입장 번호 순서입니다. 빠른 번호를 예매 할수록 입장 순서가 빨라집니다.</p>
-	<div id="standA" style="display: inline-block; margin-right:40px;">
-		<h4>스탠딩 A구역</h4>
+	
+	<div class="stageBar">
+		<b>STAGE</b>
+	</div>
+	
+	<div id="standA" style="display: inline-block; margin-right:40px; margin-top:20px;">
+		<h6>스탠딩 A구역</h6>
 		<table style="border-spacing: 0;">
 			<tr>
 			<c:forEach var="seatA" begin="1" end="825" step="1">
 				<td>
 					<input type="button" id=btnA${seatA} name=btnA${seatA} value="${seatA}" onclick="standAdd(this, 'A', ${seatA})">
 				</td>
-				<c:if test="${seatA mod 25 == 0}">
+				<c:if test="${seatA mod 33 == 0}">
 					<tr></tr>
 				</c:if>
 			</c:forEach>
@@ -21,15 +141,15 @@
 		</table>
 	</div>
 	<div id="standB" style="display: inline-block;">
-		<h4>스탠딩 B구역</h4>
+		<h6>스탠딩 B구역</h6>
 		<table style="border-spacing: 0;">
 			<tr>
 			<c:forEach var="seatB" begin="1" end="825" step="1">
 				<td>
 					<input type="button" id=btnB${seatB} name=btnB${seatB} value="${seatB}" onclick="standAdd(this, 'B', ${seatB})">
 				</td>
-				<c:if test="${seatB mod 25 == 0}">
-				<!-- 테이블 한줄에 5줄씩 -->
+				<c:if test="${seatB mod 33 == 0}">
+				<!-- 테이블 한줄에 30개씩 -->
 					<tr></tr>
 				</c:if>
 			</c:forEach>
@@ -39,11 +159,21 @@
 </div><!-- map1Fjsp end -->
 
 <div id="map2Fjsp">
-	<h2>좌석선택-가격할인-배송현장수령</h2>
-	<h4>지정석 2층</h4>
+	<div class="barBtn">
+	    <button type="button" class="btn bar3">수령방법</button>
+	    <button type="button" class="btn bar2">할인선택</button>
+	    <button type="button" class="btn bar1">좌석선택</button>
+	</div>
+	<br>
+	<h5>지정석 2층</h5>
 	<p>객석 2층은 지정좌석제입니다.</p>
-	<div id="rseatX" style="display: inline-block;">
-		<h4>지정좌석 X구역</h4>
+	
+	<div class="stageBar">
+		<b>STAGE</b>
+	</div>
+	
+	<div id="rseatX" style="display: inline-block; margin-left:40px;  margin-top:20px;">
+		<h6>지정좌석 X구역</h6>
 		<table style="border-spacing: 0;">
 			<tr>
 			<!-- X구역 행마다 들어가는 빈공간 배열 선언 -->
@@ -73,7 +203,7 @@
 		</table>
 	</div><!-- id="rseatX" end -->
 	<div id="rseatY" style="display: inline-block;">
-		<h4>지정좌석 Y구역</h4>
+		<h6>지정좌석 Y구역</h6>
 		<table style="border-spacing: 0;">
 			<tr>
 			<!-- Y구역 행마다 들어가는 빈공간 배열 선언 -->
@@ -125,7 +255,7 @@
 		</table>
 	</div><!-- id="rseatY" end -->
 	<div id="rseatZ" style="display: inline-block;">
-		<h4>지정좌석 Z구역</h4>
+		<h6>지정좌석 Z구역</h6>
 		<table style="border-spacing: 0;">
 			<tr>
 			<!-- Z구역 행마다 들어가는 빈공간 배열 선언 -->
@@ -155,18 +285,26 @@
 </div><!-- map2Fjsp end -->	
 
 <div id="ticketSalejsp">
-	<h2>좌석선택-가격할인-배송현장수령</h2>
-	<h3>* 가격/할인 *</h3>
-	<table>
-	<tr>
-		<td>등급</td>
-		<td>할인명</td>
-		<td>할인금액</td>
-		<td>매수</td>
-		<td>설명</td>
+	<div class="barBtn">
+	    <button type="button" class="btn bar3">수령방법</button>
+	    <button type="button" class="btn bar2" style="background:#99ff99; color: black;">할인선택</button>
+	    <button type="button" class="btn bar1" style="background:black; color: white;">좌석선택</button>
+	</div>
+	<br>
+	<h5>
+		<i class="fa-solid fa-money-check-dollar"></i> 할인 선택
+	</h5>
+	<p>할인은 자동선택 되지 않으니, 적용 받고자하는 할인이 있는 경우 직접 선택해주시기 바랍니다.</p>
+	<table class="stb">
+	<tr style="background:black; color:white;">
+		<th>등급</th>
+		<th>할인명</th>
+		<th>할인금액</th>
+		<th>매수</th>
+		<th>설명</th>
 	</tr>
 	<tr>
-		<td>R석</td>
+		<td style="background:lightgrey;">R석</td>
 		<td>
 			<select name="disSelectR">
 				<option value="N">-선택없음-</option>
@@ -187,7 +325,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>S석</td>
+		<td style="background:lightgrey;">S석</td>
 		<td>
 			<select name="disSelectS">
 				<option value="N">-선택없음-</option>
@@ -208,7 +346,7 @@
 		</td>
 	</tr>
 	<tr>
-		<td>A석</td>
+		<td style="background:lightgrey;">A석</td>
 		<td>
 			<select name="disSelectA">
 				<option value="N">-선택없음-</option>
@@ -229,10 +367,51 @@
 		</td>
 	</tr>
 	</table>
+	<br>
+	<hr>
+	<h6>
+		<i class="fa-regular fa-handshake"></i> 장애인·국가유공자 이용안내
+	</h6>
+	<b>장애인</b>
+	<table class="jtb" style="margin-bottom:10px;">
+	<tr>
+		<td>구 분</td>
+		<td>장애인 복지카드 소지자 (1급~3급 / 중증)</td>
+		<td>장애인 복지카드 소지자 (4급이하 / 경증)</td>
+	</tr>
+	<tr>
+		<td>공연</td>
+		<td>본인 및 동반 1인 30%</td>
+		<td>본인 30%</td>
+	</tr>	
+	</table>
+	<b>국가유공자</b>
+	<table class="ktb">
+	<tr>
+		<td>구 분</td>
+		<td>국가유공자 본인 및 동반 1인</td>
+		<td>국가유공자 유족증 소지자 본인</td>
+		<td>국가유공자 배우자(국가유공자 동반시)</td>
+	</tr>
+	<tr>
+		<td>공연</td>
+		<td>30% 할인</td>
+		<td>30% 할인</td>
+		<td>30% 할인</td>
+	</tr>	
+	</table>
+	<p>
+		법률에서 정한 국가유공자(독립유공자, 5·18민주유공자, 특수임무유공자), 참전유공자 기준으로 할인 제공<br>
+		국가유공자 배우자는 가족관계증명서와 신분증을 함께 제시하여야 한다.
+	</p>
 </div>
 
 <div id="ticketDeliveryjsp">
-	<h2>좌석선택-가격할인-배송현장수령</h2>
+	<div class="barBtn">
+	    <button type="button" class="btn bar3" style="background:#99ff99; color: black;">수령방법</button>
+	    <button type="button" class="btn bar2">할인선택</button>
+	    <button type="button" class="btn bar1" style="background:black; color: white;">좌석선택</button>
+	</div>
 	<h3>* 배송선택/주문자확인 *</h3>
 	<table>
 	<tr>
