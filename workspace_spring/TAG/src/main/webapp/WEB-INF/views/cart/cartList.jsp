@@ -510,12 +510,10 @@ function topFunction() {
 				        <!-- 가격 -->
 				        <td style="width: 130px;">
 				        <input type="hidden" id="product_price${row.cart_no}" name="product_price" value="${row.price}">
-
 					        ￦
 					        <span id="totalAmount${row.cart_no}">
 					        <fmt:formatNumber value="${row.price * row.cnt}" pattern="#,###" />
 					        </span>
-
 				        </td>
 				        
 				        <!-- 수량 증가 감소 버튼 -->

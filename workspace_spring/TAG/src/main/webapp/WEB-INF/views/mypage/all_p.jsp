@@ -1,6 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ include file="../header.jsp" %>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&family=Mulish:wght@200;300;400;500;600;700;800;900;1000&display=swap" rel="stylesheet">
 
 <style>
 	.leftcontent {
@@ -13,9 +17,11 @@
 	.rightcontent {
 		float: right;
 		width: 80%;
-		height: 100%;		
+		height: 100%;
+		font-family: 'Jost', sans-serif;
+  		letter-spacing: 0.25px;	
 	}
-
+	
 	.leftcontent, .rightcontent, .box { border-top: 1px solid black; }
 	
 	.leftcontent, .rightcontent { border-bottom: 1px solid black; }
@@ -24,24 +30,26 @@
 	
 	.box { margin-top: 10%; }
 	
-	.clickInfo {
-		text-align: center;
-		margin: 10px;
-		color: #000000;
-		animation-name: blink;
-		animation-duration: 3s;
-		animation-iteration-count: infinite;
+	.mylike_product {
+		margin-top: 1%;
+		/*border: solid 1px blue;*/
+		height: 50%;
+	}
+
+	.mylike_product p {
+		border-bottom: solid 3px black;
 	}
 	
-	@keyframes blink {
-		50% {opacity: 0;}
+	table {
+		margin-left:auto; 
+    	margin-right:auto;
 	}
 </style>
 
 <!-- 본문 시작 -->
 
 <div class="title">
-	<h3 style="text-align: center;">상품 구매내역</h3>
+	<h3 style="text-align: center;">관심 공연 / 관심 상품</h3>
 </div>
 
 <div class="leftcontent">
@@ -67,46 +75,31 @@
 
 
 <div class="rightcontent">
-	<div class="myproductList">
-		<c:if test="${orderCount == 0}">
-			상품 구매내역이 없습니다.
-		</c:if>
+	<div class=mylike_product>
+		<p style="text-align: center;">관심 상품</p>
 		
-		<c:if test="${orderCount != 0}">
-		<p class="clickInfo">상세내역을 보고싶으시면 주문번호를 클릭해주세요!</p>
-		<table class="table table-hover">
-			<tr>
-				<th>주문번호</th>
-				<th>주문금액</th>
-				<th>쿠폰 할인 금액</th>
-				<th>쿠폰번호</th>
-				<th>사용 포인트</th>
-				<th>배송비</th>
-				<th>최종 결제금액</th>
-				<th>포인트 적립금</th>
-				<th>받는 사람</th>
-				<th>주소</th>
-				<th>핸드폰 번호</th>
-				<th>배송메세지</th>
-			</tr>
-			<c:forEach var="row" items="${list}" varStatus="vs">
-			<tr>
-				<td>
-					<a href="pDetail/${row.order_num}">${row.order_num}</a>
-				</td>
-				<td>${row.order_price}</td>
-				<td>${row.cp_dis}</td>
-				<td>${row.cp_no}</td>
-				<td>${row.pt_minus}</td>
-				<td>${row.d_fee}</td>
-				<td>${row.total_price}</td>
-				<td>${row.pt_plus}</td>
-				<td>${row.rec_name}</td>
-				<td>${row.rec_addr1} ${row.rec_addr2}</td>
-				<td>${row.rec_tel}</td>
-				<td>${row.msg}</td>
-			</tr>
-			</c:forEach>
+		<table border="1">
+		<tr>
+		<c:forEach var="row" items="${list_p}" varStatus="vs">
+			<td id="product_box">
+				<c:choose>
+					<c:when test="${row.postername != null}">
+						<a href="/product/${row.like_li}"><img src="/storage/${row.postername}" width="100px"></a>
+					</c:when>
+					<c:otherwise>
+						등록된 사진 없음!!<br>
+					</c:otherwise>
+				</c:choose>
+				<div id="product_name">
+					<a href="/product/${row.like_li}">${row.pro_name}</a>
+				</div>
+			</td>
+			<!-- 테이블 한줄에 3칸씩 -->
+			<c:if test="${vs.count mod 3==0 }">
+				<tr></tr>
+			</c:if>
+		</c:forEach>
+		</tr>
 		</table>
 		
 		<!-- 페이징 -->
@@ -125,7 +118,7 @@
 		
 					<!-- startPage는 1, 11, 21 .. 이기에 1보다 크다면 이전 페이지 이동 가능-->
 					<c:if test="${startPage > 1}">
-						<a href="/mypage/myproduct?pageNum=${startPage-1}">[이전]</a>
+						<a href="/mypage/all_p?pageNum=${startPage-1}">[이전]</a>
 					</c:if>
 		
 					<!-- 현재 페이지 볼드체, 현재 페이지 외의 보이는 페이지 전부 이동 링크 걸기 -->
@@ -135,19 +128,18 @@
 								<span style="font-weight: bold">${i}</span>
 							</c:when>
 							<c:when test="${pageNum != i}">
-								<a href="/mypage/myproduct?pageNum=${i}">${i}</a>
+								<a href="/mypage/all_p?pageNum=${i}">${i}</a>
 							</c:when>
 						</c:choose>
 					</c:forEach>
 		
 					<!-- endPage보다 총 페이지 수가 크다면 다음 pages로 이동 가능하다 -->
 					<c:if test="${endPage < pageCount}">
-						<a href="/mypage/myproduct?pageNum=${startPage+5}">[다음]</a>
+						<a href="/mypage/all_p?pageNum=${startPage+5}">[다음]</a>
 					</c:if>
 			</c:if>
 		</div>
 		
-		</c:if>
 	</div>
 </div><!-- rightcontent end -->
 
