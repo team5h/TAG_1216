@@ -116,7 +116,6 @@
 		GROUP BY category DESC
 	</select>
 	
-	
 <!-- 티켓 결제시 관련 상품 보여주기 (다슬언니)-->
 	<select id="viewProduct" resultType="kr.co.itwill.product.ProductDTO" parameterType="Int">	
 		SELECT *

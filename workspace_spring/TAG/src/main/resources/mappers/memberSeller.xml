@@ -129,20 +129,6 @@
 		WHERE p_id=#{p_id}
 	</update>
 
-		        SELECT q.q_no, qname, nickname, content, subject, q.pro_no, postername, pro_name, q.edit, q.regdate, a_no , p.p_id, a_stus,a.regdate as answerdate
-                FROM qna q JOIN product p ON q.pro_no = p.pro_no
-                           JOIN member m ON q.qname = m.m_id
-                           left outer JOIN answer a ON a.q_no = q.q_no
-                           JOIN seller s ON p.p_id = s.p_id
-                WHERE a_stus = 'Y' AND p.p_id = #{p_id}
-                ORDER BY q_no ASC 
-		    ) CC, (SELECT @RNO := 0) BB 
-		 ORDER BY q_no DESC 
-		) AA 
-		WHERE r >= #{start} AND r <= #{end}
-	]]>
-	
-</select>
 
 <update id="answerupdate" parameterType="kr.co.itwill.Answer.AnswerDTO">
 	UPDATE answer
