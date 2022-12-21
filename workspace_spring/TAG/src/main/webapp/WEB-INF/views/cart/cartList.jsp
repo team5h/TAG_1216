@@ -486,7 +486,7 @@ function topFunction() {
 				        <!-- 가격 -->
 				        <td style="width: 130px;">
 				        <input type="hidden" id="product_price${row.cart_no}" name="product_price" value="${row.price}">
-				        ￦ <fmt:formatNumber id="" value="" pattern="#,###" />
+				        ￦ <fmt:formatNumber value="${row.price * row.cnt}" pattern="#,###" />
 				        </td>
 				        <td style="width: 130px; padding-left: 0px;">
 				        <div class="count-wrap _count">

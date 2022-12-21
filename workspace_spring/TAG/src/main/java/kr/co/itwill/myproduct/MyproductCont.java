@@ -124,10 +124,11 @@ public class MyproductCont {
         int endPage = startPage + pagePerBlock-1;
 		
 		
-        List<Map<String, Object>> list = null;
+        List<Map<String, Object>> detail = null;
         if (totalRowCount > 0) {
-    		list = myproductDao.list(order_num, startRow, endRow);
-    		mav.addObject("list", list);
+        	detail = myproductDao.detail(order_num, startRow, endRow);
+        	    		
+        	mav.addObject("detail", detail);
      	    mav.addObject("total", totalRowCount);
             mav.addObject("pageNum", currentPage);
             mav.addObject("count", totalRowCount);

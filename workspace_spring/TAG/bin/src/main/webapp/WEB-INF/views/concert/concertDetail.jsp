@@ -171,9 +171,10 @@ img{object-fit: contain;}
   right: 0px;
 }
 
-#detail-table td {
+#detail-table td {	
+	font-size: 15px;
     vertical-align : top; !import;
-	padding: 12px 30px 36px 0px;
+	padding: 12px 30px 24px 0px;
     border-bottom: 1px solid black;
 }
 
@@ -224,7 +225,8 @@ line-height : 10px;
 
 
 <!-- 본문영역 -->
-${mem_grade == null}
+<%-- ${mem_grade == null} --%>
+<%-- ${s_m_id} --%>
 
 <button onclick="topFunction()" id="myBtn" title="Go to top" style="font-size: 26px;">Go to top ↑</button>
 
@@ -235,7 +237,9 @@ ${mem_grade == null}
 
 <!-- c_no hidden 값 -->
 <input type="hidden" name="c_no" value="${concert.c_no}" />
-
+<!-- m_id hidden 값 -->
+<input type="hidden" name="m_id" value="${s_m_id}" />
+<input type="hidden" name="likechk" value="${likechk}" />
 
 <div class="wrapAll">
 	
@@ -289,22 +293,10 @@ ${mem_grade == null}
 							<!-- 하트 아이콘 -->
 							
 							<!-- 비회원은 비어있는 하트만 -->
-							<c:if test="${mem_grade == null}">
+							<input type="hidden" name="likecnt" value="${concert.likecnt}" />
 								<div class="heart-icon"> 
 										<img id="heart" src="/images/heart-192x192_1.svg"/>
-									<span class="likecnt">${concert.likecnt}</span>
-									</div>
-							</c:if>	
-							
-							
-							<!-- 회원은 하트 클릭할 수 있도록 -->
-							<c:if test="${mem_grade != null}">
-								<div class="heart-icon"> 
-										<img id="heart" src="/images/heart-192x192_1.svg"/>
-									<span class="likecnt">${concert.likecnt}</span>
-									</div>
-							</c:if>	
-							
+									<span id="likecntUpdate">${concert.likecnt}</span>
 						</td>	
 						
 						
@@ -359,14 +351,31 @@ ${mem_grade == null}
 									<div id="concert-price">
 										<td style="font-weight: 600"> 가격 </td>
 										<td href="#">
+											<div>스탠딩 R <fmt:formatNumber value="${concert.price}" pattern="#,###"/>원</div>
+											<div>지정석 R <fmt:formatNumber value="${concert.price}" pattern="#,###"/>원</div>
+											<div>지정석 S <fmt:formatNumber value="${concert.price-11000}" pattern="#,###"/>원</div>
+											<div>지정석 A <fmt:formatNumber value="${concert.price-22000}" pattern="#,###"/>원</div>
+										</td>
+									</div>
+									</tr>	
+									
+									<!-- 얼리버드 예매 기간 -->
+									<tr>		
+									<div id="concert-earlybird">
+										<td style="font-weight: 600"> 선예매 기간 </td>
+										<td href="#">
 										<div style="padding-bottom: 7px;">
-											스탠딩석 
-											<fmt:formatNumber value="${concert.price}" pattern="#,###" /> 원
+										
+										<c:if test="${concert.open_eb == null}">
+											선예매 없는 공연
+										</c:if>
+											<fmt:parseDate var="open_eb" value="${concert.open_eb}" pattern="yyyy-MM-dd hh:mm:ss"/>
+											<fmt:formatDate value="${open_eb}" pattern="yyyy. MM. dd (E) hh:mm"/>
 										</div>
 										<div>
-											지정석
-											<fmt:formatNumber value="${concert.price}" pattern="#,###" /> 원
-										</div>
+											<fmt:parseDate var="close_eb" value="${concert.close_eb}" pattern="yyyy-MM-dd hh:mm:ss"/>
+											<fmt:formatDate value="${close_eb}" pattern="yyyy. MM. dd (E) hh:mm"/>						
+											</div>
 										</td>
 									</div>
 									</tr>	
@@ -467,9 +476,7 @@ ${mem_grade == null}
 
 
 
-<!-- ------------------------------------------------------------------------------------------ -->
-
-
+<!-- 티켓예매 모달창 html ----------------------------------------------------------------------------->
 
 <!-- The Modal -->
 <div id="bookModal" class="bookModal">
@@ -487,13 +494,17 @@ ${mem_grade == null}
 				<input type="hidden" name="earlybird" value="${earlybird}" />
 				<!-- c_no hidden 값 -->
 				<input type="hidden" name="c_no" value="${concert.c_no}" />
-		    	<div id="mainContainer" style="--display: inline-block; float:left; overflow-y:scroll; height:540px; --margin-right:200px;">
+				<!-- c_title hidden 값 -->
+				<input type="hidden" name="title" value="${concert.title}" />
+				<!-- c_price hidden 값 -->
+				<input type="hidden" name="price" value="${concert.price}" />
+		    	<div id="mainContainer">
 					<!-- include 영역 시작 -->
 					<%@ include file="../tickets/mainContents.jsp" %>
 					<!-- include 영역 끝 -->
 				</div><!-- mainContainer end -->
 				
-				<div class="sideContainer" id="sideContainer" style="--display: inline-block; float:right; overflow-y:scroll; height:540px; width: 364px; --background:red;">
+				<div class="sideContainer" id="sideContainer">
 					<!-- include 영역 시작 -->
 					<%@ include file="../tickets/sideContents.jsp" %>
 					<!-- include 영역 끝 -->
@@ -507,8 +518,7 @@ ${mem_grade == null}
 	</div><!-- modal-content end -->
 </div><!-- modal-test end -->
 
-
-
+<!-- ------------------------------------------------------------------------------------------------------------->
 
 
 <!-- 본문영역 -->
@@ -516,7 +526,7 @@ ${mem_grade == null}
 
 
 <script>
-/* Go to top */
+/* Go to top ------------------------------------------------------------------------ */
 function scrollFunction() {
 	let mybutton = document.getElementById("myBtn");
 
@@ -537,7 +547,7 @@ function topFunction() {
 
 
 
-/* 캘린더 날짜 표시 */
+/* 캘린더 날짜 표시 변수 불러오기 ---------------------------------------------------------- */
 var concertDate = `${concert.date}`;
 var dateSplit = concertDate.split('-');
 
@@ -549,51 +559,171 @@ var concertDay = dateSplit[2];
 
 let testDate = new Date();
 testYear = new Date(concertYear, concertMonth - 1, concertDay); // Sat Dec 24 2022 00:00:00 GMT+0900 (한국 표준시)
-//alert(testYear);
 
 let concertdateYear = testYear.getFullYear(); //2022
 let concertdateMonth = testYear.getMonth(); //12월
 let concertdateDate = testYear.getDate(); //
 
-//alert("concertdateDate : " + concertdateDate);
 
 
 
-/* 좋아요 클릭 */
- 
-
+/* 좋아요 클릭 !  -------------------------------------------------------------------- */
 $(document).ready(function(){
 	
 	let c_no = "${concert.c_no}";
-	let likecnt = "${concert.likecnt}";
 	
-	// likecnt가 0 이상이면 채워져있는 하트아이콘 출력하기
+	let likecnt = "${concert.likecnt}"; // 그냥 숫자 증가
+	
+	let m_id    = "${s_m_id}";
+	
+	let likechk = "${likechk}"; //사용자가 좋아요 했는지 안했는지.
+	//alert(likechk);
 	
 	
-/* 	if (likecnt > 0) {
+
+	
+ 	// likecnt가 0 이상이면 채워져있는 하트아이콘 출력하기
+	if(likechk == null){
+		$("#likechk").prop("src", "/images/heart-192x192_1.svg");
+	}else if (likechk == 0){
+		$("#likechk").prop("src", "/images/heart-192x192_1.svg");
+	} else if (likechk == 1) {
 		$("#heart").prop("src", "/images/heart-192x192_2.svg");
-	}else {
-		$("#heart").prop("src", "/images/heart-192x192_1.svg");
-} */
+	}//if end 
  
  
-	var flag = false;
+	var heartFilled = likechk; //좋아요:1 안좋아요:0
 
 	$("#heart").click(function(){
+		alert("g");
+		// [로그인 확인] if start
+		if(${s_m_id == null}){ // 로그인 X
+			alert("로그인 후 이용가능합니다.");
+			let url = '/loginForm';
+			location.replace(url);
+		}else{ // 로그인 O
+
+			// [클릭하면 아이콘 색깔 채우기] if start
+			if(heartFilled==0) { 
+			
+				// 1번 클릭했을 때 초록색 하트, 숫자 증가 count +1
+				
+				
+				//alert("flag=true? : "+flag); //테스트! false 나와야함
+				$("#heart").prop("src", "/images/heart-192x192_2.svg");
+				
+				var heartCnt=$("#likecntUpdate").text()*1; //좋아요 수 현재 값 가져오기
+				//alert(heartCnt);
+				
+				$("#likecntUpdate").text(heartCnt+1);
+				
+				// insert ? update 로 count +1 증가
+				likecntInc(c_no);
+				//mypage 좋아요에 insert
+				myLikeInsert(m_id, c_no);
+				
+				heartFilled = 1;
+			}else if(heartFilled==1) { // 두번 누르면 아이콘 색깔 돌아오기, 숫자 감소 count -1
+				$("#heart").prop("src", "/images/heart-192x192_1.svg");	
+				//alert("flag=false? : "+flag); //테스트! true 나와야함
+				
+				var heartCnt=$("#likecntUpdate").text()*1; //좋아요 수 현재 값 가져오기
+				//alert(heartCnt);
+				
+				$("#likecntUpdate").text(heartCnt-1);
+				
+				// update로 count -1 
+				likecntDec(c_no); 
+				//mypage 좋아요 삭제하기
+				myLikeDelete(m_id, c_no);
+				
+				heartFilled = 0;
+				}//[아이콘 클릭 했을 때 변경] if end
 		
-		if(flag==false) {
-			$("#heart").prop("src", "/images/heart-192x192_2.svg");
-			flag = true;
-			alert("flag=true? : "+flag);
-		}else if(flag==true) {
-			$("#heart").prop("src", "/images/heart-192x192_1.svg");
-			flag = false;
-			alert("flag=false? : "+flag);
-		}
+		}//[로그인확인] if end
+	});//$("#heart").click(function() end
+			
+	
+	// ----------------------------------------------------------- 좋아요 수 증가 
+	function likecntInc(c_no) {
+		
+		$.ajax({
+			 url:  '/concert/likecntInc'
+			,type : 'post'
+			,data : {'c_no':c_no}
+			,success : function(data) {
+				//alert("데이터 들어오기 성공!" + data);
+				if(data==1){
+					$("#heart").prop("src", "/images/heart-192x192_2.svg");
+					
+					// 문제점
+					// 1. 새로고침하면 컬러가 다시 바뀜.
+					// 2. 숫자가 실시간으로 안바뀜. (새로고침 해야 바뀜)
+					
+				}else {
+					$("#heart").prop("src", "/images/heart-192x192_1.svg");
+				}//(data==1) end
+				
+			}//success end
+		});//$.ajax({}) end
 
-	});
+	}//likecntInsert(c_no) end
+	
+	
+	// ----------------------------------------------------------- 마이페이지에 좋아요 넣기
+	function myLikeInsert(m_id, c_no) {
+		
+		$.ajax({
+				  url  : '/concert/myLikeInsert'
+				 ,type : 'post'
+				 ,data : {'m_id':m_id, 'c_no':c_no}
+				 ,success : function(data) {
+					 if(data==1){ //마이페이지 좋아요 insert 성공
+					 	// 뭘넣어야하지 ? 딱히 없는뎅
+					 }//if end
+				 }//success end
+		
+		});//$.ajax({}) end
 
-});
+	}//MylikeInsert(m_id, c_no) end
+	
+	
+	// ----------------------------------------------------------- 좋아요 두번누르면 -1
+	function likecntDec(c_no) {
+		
+		$.ajax({
+				  url  : '/concert/likecntDec'
+				 ,type : 'post'
+				 ,data : {'c_no':c_no}
+				 ,success : function(data) {
+					 if(data==1){
+						$("#heart").prop("src", "/images/heart-192x192_1.svg");
+					 }//if end
+				 }//success end
+		});//$.ajax({}) end
+		
+	}//likecntDelete(c_no) end
+	
+			
+	// ----------------------------------------------------------- 좋아요 두번누르면 삭제
+	function myLikeDelete(m_id, c_no) {
+		
+		$.ajax({
+				  url  : '/concert/myLikeDelete'
+				 ,type : 'post'
+				 ,data : {'m_id':m_id, 'c_no':c_no}
+				 ,success : function(data) {
+					 if(data==1){ //마이페이지 좋아요 insert 성공
+					 	//alert("삭제 성공!");
+						// 뭘넣어야하지 ? 딱히 없는뎅
+					 }//if end
+				 }//success end
+	
+		});//$.ajax({}) end
+		
+	}//myLikeDelete(m_id, c_no) end
+	
+});//$(document).ready(function() end
 
 
 
@@ -605,7 +735,7 @@ $(document).ready(function(){
 
 
 
-/* 모달창 ------------------------------------------------------------------------------------------------ */
+/* 모달창 (티켓예매 다슬님)---------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 //modal test
 //Get the modal
@@ -660,6 +790,16 @@ $(document).ready(function(){
 	$("#goSale").css("display", "none"); //이전단계2
 	$("#goDlv").css("display", "inline-block;"); //다음단계1
 	$("#goFinish").css("display", "none"); //결제완료
+	
+
+	/* ---------------- */
+	
+	//팔린 좌석 비활성화하기
+	<c:forEach items="${flagnumList}" var="item">
+		//alert("${item.flagnum}");	// 위에 list나 변수를 선언하고 alert 자리에 담으면 차례대로 값을 받는다.
+		$("#btn${item.flagnum}").css('background', 'lightgrey');
+		$("#btn${item.flagnum}").attr('disabled', 'disabled');
+	</c:forEach>
 	
 });//ready() end
 
@@ -837,7 +977,6 @@ for(let i = 1; i < flagsZ.length; i++){ //Z구역 R등급, S등급, A등급
 
 
 
-
 //미니맵 1층 버튼을 누르면
 $("body").on('click', '#map1F', function(){ //map1F버튼 id받아오기
 	//MainContainer에서
@@ -893,6 +1032,7 @@ function standAdd(SeatNum, section, flagNum){ //좌석번호, 구역이름, 버�
 		input += "'>";
 		$("#btn"+section+flagNum).addClass("on"); //#btnA+seatNo에 class="on" 추가
 		$("#panel").append(input); //<div id="panel">안에 <input class=input+section+flagNum></input> 생성
+		$("#panel").scrollTop($("#seatAddFormjsp").height());
 		
 		let input2="";
 		input2 += "<input type='text' class='input";
@@ -901,8 +1041,15 @@ function standAdd(SeatNum, section, flagNum){ //좌석번호, 구역이름, 버�
 		input2 += "R석 1층-스탠딩"+section+"구역 입장번호-"+snum;
 		input2 += "'>";
 		$("#addedSeat").append(input2);
-		
 		countSeats(); //좌석수 계산하기
+		
+		let input3="";
+		input3 += "<input type='hidden' class='input";
+		input3 += 									section+flagNum;
+		input3 += "' name='flagnum' value='";
+		input3 += 							section+flagNum;
+		input3 += "'>";
+		$("#addedSeat").append(input3);
 	}else{ //좌석선택을 해제할 때
 		$("#btn"+section+flagNum).removeClass("on"); //#btn+seatNo에 class="on" 제거
 		$("input").remove(".input"+section+flagNum); //<input class=input+section+flagNum></input> 제거
@@ -951,6 +1098,7 @@ function rseatAdd(SeatNum, section, row, flagNum){ //좌석번호, 구역이름,
 		input += "'>";
 		$("#btn"+section+flagNum).addClass("on"); //#btnA+seatNo에 class="on" 추가
 		$("#panel").append(input); //<div id="panel">안에 <input class=input+section+flagNum></input> 생성
+		$("#panel").scrollTop($("#seatAddFormjsp").height());
 		
 		let input2="";
 		input2 += "<input type='text' class='input";
@@ -960,6 +1108,14 @@ function rseatAdd(SeatNum, section, row, flagNum){ //좌석번호, 구역이름,
 		input2 += "'>";
 		$("#addedSeat").append(input2);
 		countSeats(); //좌석수 계산하기
+		
+		let input3="";
+		input3 += "<input type='hidden' class='input";
+		input3 += 									section+flagNum;
+		input3 += "' name='flagnum' value='";
+		input3 += 							section+flagNum;
+		input3 += "'>";
+		$("#addedSeat").append(input3);
 	}else{ //좌석선택을 해제할 때
 		$("#btn"+section+flagNum).removeClass("on"); //#btn+seatNo에 class="on" 제거
 		$("input").remove(".input"+section+flagNum); //<span class=span+str></span> 제거

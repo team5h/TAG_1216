@@ -31,8 +31,13 @@ public class MyproductDAO {
 		return sqlSession.selectOne("myproduct.orderCount", s_m_id);
 	}//orderCount() end
 	
-	public List<Map<String, Object>> detail(String order_num) {
-		return sqlSession.selectList("myproduct.detail", order_num);
+	public List<Map<String, Object>> detail(String order_num, int start, int end) {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("order_num", order_num);
+		map.put("start", start);
+		map.put("end", end);
+
+		return sqlSession.selectList("myproduct.detail", map);
 	}//detail() end
 	
 	public int total(String order_num) {
