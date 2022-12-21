@@ -54,16 +54,7 @@ input[type="checkbox"] + label:before {
 		<span style="color:#b8b8b8" class="fontG"> 03 ORDER CONFIRM </span> 
 	</div>
 
-<form  action="/product/orderProc"  onsubmit="return orderCheck()"> <!-- 하단 스크립트 --> 
-	<input type="hidden" value="${order_proinfo.pro_no}" name="pro_no">
-	<input type="hidden" value="" id="Fcp_dis" name="cp_dis">
-	<input type="hidden" value="" id="Fd_fee" name="d_fee">
-	<input type="hidden" value="" id="Ftotal_price" name="total_price">
-	<input type="hidden" value="${(order_proinfo.price * buystock)}" name="order_price">
-	<input type="hidden" value="${(order_proinfo.price * buystock)*0.01}" name="pt_plus">
-	<input type="hidden" value="${buystock}" name="detail_cnt">
-	<input type="hidden" value="" id="discount" name="discount">
-
+<form id="orderfrm" action="/product/order" onsubmit="return orderCheck()"> <!-- 하단 스크립트 --> 
 	<div style="padding:0 10px; width: 60%; display: inline-block;"> 
 		<div style="margin-top: 50px; margin-bottom: 30px;"> 
 			<p style="font-weight: 600; padding-bottom: 5px; margin-bottom: 30px; border-bottom: 2px solid;">배송 정보</p>
@@ -111,12 +102,12 @@ input[type="checkbox"] + label:before {
 				<tr> 
 					<td style="padding-bottom:20px;">쿠폰</td>
 					<td style="padding-bottom:20px; padding-left: 60px;">
-						<select style="padding-left: 5px; width: 220px; height: 40px;" id="couponselect" name="cp_no">		
-							<c:if test="${empty mem_coupon}"> <option value = "0"> 사용 가능한 쿠폰이 없습니다.</option> </c:if> 
-							<c:if test="${not empty mem_coupon}"> <option value = "0">선택안함</option> </c:if>
+						<select style="padding-left: 5px; width: 220px; height: 40px;" id="couponselect">		
+							<c:if test="${empty mem_coupon}"> <option value="null"> 사용 가능한 쿠폰이 없습니다.</option> </c:if> 
+							<c:if test="${not empty mem_coupon}"> <option value="null">선택안함</option> </c:if>
 							<c:forEach var="row" items="${mem_coupon}" varStatus="vs">
 									<c:choose>
-										<c:when test="${row.coupon == 'Bc'}"><option value="${row.cp_no}">공연 예매 감사 쿠폰 (10%)</option></c:when>
+										<c:when test="${row.coupon == 'Bc'}"><option id="Bc" value="${row.cp_no}">공연 예매 감사 쿠폰 (10%)</option></c:when>
 										<c:when test="${row.coupon == 'EBc'}"><option value="${row.cp_no}">얼리버드 예매 쿠폰(15%)</option></c:when>
 										<c:when test="${row.coupon == 'Dc'}"><option value="${row.cp_no}">배송비 할인 쿠폰</option></c:when>
 										<c:when test="${row.coupon == 'Bday'}"><option value="${row.cp_no}">생일 축하 쿠폰 (10%)</option> </c:when>
@@ -149,13 +140,13 @@ input[type="checkbox"] + label:before {
 			<div style="width: 100%;"> 
 				<button type="button" class="btn btn-outline-black btn-sm" id="card" style="width: 33.3%; border-right:none;"> 신용·체크카드</button>
 				<button type="button" class="btn btn-outline-black btn-sm" id="bank" style="width: 33.3%; margin-left: -5px; border-right:none;"> 무통장 입금</button>
-				<button type="button" class="btn naverbtn btn-sm" onclick="window.open('https://nid.naver.com/nidlogin.login');" style="width: 33.3%; margin-left: -5px;"> 네이버 페이</button>			
+				<button type="button" class="btn naverbtn btn-sm" onclick="window.open('https://nid.naver.com/nidlogin.login');" style="width: 33.3%; margin-left: -5px;"> 네이버 페이</button>
 			</div>	
 
 			<br>
 			
 			<div id="cardinfo" style="display:none; font-size:13px; margin-bottom: 30px; padding: 0 110px;">
-				<select style="width: 100%; padding-left: 5px; height: 40px;">
+				<select style="width: 100%;">
 					<option selected="selected" style="color:gray"> 카드사를 선택해주세요. </option>
 					<option> 삼성 카드 </option>
 					<option> KB 국민 카드 </option>
@@ -167,7 +158,7 @@ input[type="checkbox"] + label:before {
 					<option> 현대 카드 </option>
 				</select>
 				
-				<select style="width: 100%; padding-left: 5px; height: 40px;">
+				<select style="width: 100%;">
 					<option selected="selected"> 일시불 </option>
 					<option> 2개월 </option>
 					<option> 3개월 </option>
@@ -177,7 +168,7 @@ input[type="checkbox"] + label:before {
 				</select>
 			</div><!-- select box -->
 			
-			<table style="margin-top: 15px;">
+			<table>
 				<tr>
 					<td style="width: 15%; vertical-align: baseline; font-size: 12px; font-weight: 600; color:gray;">환불안내</td>
 					<td style="font-size:12px; color:gray;">
@@ -261,19 +252,8 @@ input[type="checkbox"] + label:before {
 					
 						<span style="float: right; font-size: 28px; font-weight: bold; color: lightgreen;"> 
 							<c:set var="total_price" value="${order_proinfo.price * buystock}"></c:set>
-							<c:choose>
-								<c:when test="${order_proinfo.price * buystock >= 50000}">
-									<span id="total_price"> <fmt:formatNumber value="${order_proinfo.price * buystock}" pattern="#,###"/></span> 
-									원
-									<c:set var="total_price" value="${order_proinfo.price * buystock}"></c:set>
-								</c:when>
-								<c:otherwise>
-									<span id="total_price"> <fmt:formatNumber value="${order_proinfo.price * buystock + 3000}" pattern="#,###"/></span> 
-									원
-									<c:set var="total_price" value="${order_proinfo.price * buystock + 3000}"></c:set>
-								</c:otherwise>
-							</c:choose>
-								
+							<span id="total_price"> <fmt:formatNumber value="${order_proinfo.price * buystock}" pattern="#,###"/></span> 
+							원		
 						</span>	
 					</div>
 					
@@ -317,8 +297,6 @@ input[type="checkbox"] + label:before {
 	var comma = '';
 	var dis_price = 0;								// 할인 된 금액 
 	
-	//total_price += 3000;							// 기본 배송비
-	
 	// 쿠폰 사용
 	$('#couponselect').change(function() {
 	    var result = $('#couponselect option:selected').text();
@@ -328,13 +306,8 @@ input[type="checkbox"] + label:before {
 				
 		    	var discount = order_price*0.1; 	// 현재 총 결제 금액에 10% 할인액
 		    	
-		    	if( order_price >= 50000 ) {	// 배송비무료 
-		    		dis_price = order_price - discount ;  
-		    	} else {
-		    		dis_price = order_price - discount + 3000;
-		    		$('#d_fee').text('3,000');
-		    	}//if end
-		    	
+		    	dis_price = order_price - discount;  
+			  	
 		    	comma = dis_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    	
 		    	$('#total_price').text(comma);
@@ -351,13 +324,8 @@ input[type="checkbox"] + label:before {
 		    	
 		    	var discount = order_price*0.15; 	// 현재 총 결제 금액에 15% 할인
 		    	
-		    	if( order_price >= 50000 ) {	// 배송비무료 
-		    		dis_price = order_price - discount ;  
-		    	} else {
-		    		dis_price = order_price - discount + 3000;
-		    		$('#d_fee').text('3,000');
-		    	}//if end
-		    			    	
+		    	dis_price = order_price - discount;
+		    	
 		  		comma = dis_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 		    	
 		  		$('#total_price').text(comma);
@@ -373,15 +341,13 @@ input[type="checkbox"] + label:before {
 		    	
 		    	var d_fee = document.getElementById("d_fee").innerText
 		    	
-		    	//alert(d_fee);
-		    	
-		    	if (d_fee == '0 '){ 
+		    	if (d_fee == '0'){ 
 			    	
 		    		alert('현재 배송비가 없습니다.');
 		    		
-		    	} else if( !(d_fee == '0 ') ) {
-
-		    		dis_price = (order_price + 3000) - 3000;	// 3000원 할인
+		    	} else {
+		    		
+		    		dis_price = order_price - 3000;	// 3000원 할인
 		    		
 			  		comma = dis_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
@@ -391,7 +357,6 @@ input[type="checkbox"] + label:before {
 			    	
 			    	$('#pt_minus').val('');
 					$('#usepoint').text('');
-					$('#d_fee').text('0');
 				
 					flag = false;
 					
@@ -532,29 +497,8 @@ input[type="checkbox"] + label:before {
   			return false;
   		}
   		
-		
-    	var d_fee = document.getElementById("d_fee").innerText
-    	var cp_dis = document.getElementById("cp_dis").innerText
-    	var total_price = document.getElementById("total_price").innerText
-		var pt_minus = $('#pt_minus').val(); 
-    	
-    	d_fee = d_fee.replace(',','');
-    	d_fee = parseInt(d_fee);
-    	//alert(d_fee);
-    	
-   		cp_dis = parseInt(cp_dis);
-    	//alert(cp_dis);
-    	//alert(pt_minus);
-    	
-    	total_price = total_price.replace(',','');
-    	total_price = parseInt(total_price);
-    	//alert(total_price);
-    	
-    	$('#Fd_fee').val(d_fee);
-    	$('#Fcp_dis').val(cp_dis);
-    	$('#Ftotal_price').val(total_price);
-    	$('#discount').val(cp_dis + pt_minus);
-    
+  		
+  		
   		return true;
   	}//end
  

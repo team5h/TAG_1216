@@ -10,6 +10,10 @@ import org.springframework.stereotype.Repository;
 
 import kr.co.itwill.QnA.QnADTO;
 import kr.co.itwill.concert.ConcertDTO;
+import kr.co.itwill.coupon.CouponDTO;
+import kr.co.itwill.memberGeneral.MemberGeneralDTO;
+import kr.co.itwill.orderDetail.OrderDetailDTO;
+import kr.co.itwill.productOrder.ProdcutOrderDTO;
 
 
 @Repository
@@ -156,4 +160,44 @@ public class ProductDAO {
 		
 		return sqlSession.selectOne("product.likechk", map); 
 	}// end
+	
+	public ProductDTO order_proinfo (int pro_no) {
+		return sqlSession.selectOne("product.order_proinfo",pro_no);
+	}
+	
+	public MemberGeneralDTO order_Minfo (String m_id) {
+		return sqlSession.selectOne("product.order_Minfo",m_id);
+	}
+	
+	public List<CouponDTO> mem_coupon (int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.selectList("product.mem_coupon",map);
+	}//end
+	
+	public int mem_couponCNT(int pro_no, String m_id) {
+		Map<String, Object> map = new HashMap<>();
+		
+		map.put("pro_no", pro_no);
+		map.put("m_id", m_id);
+		
+		return sqlSession.selectOne("product.mem_couponCNT",map);
+	}
+	
+	public int mem_couponTOTALCNT (String m_id) {
+		return sqlSession.selectOne("product.mem_couponTOTALCNT",m_id);
+	}
+	
+	public int productorderIns (Map<String, Object> map) {
+		return sqlSession.insert("product.productorderIns", map);
+	}
+	
+	public int orderdetailIns (OrderDetailDTO dto) {
+		return sqlSession.insert("product.orderdetailIns", dto);
+	}
+	
+	
 }//class end

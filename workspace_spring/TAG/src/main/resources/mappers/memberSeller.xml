@@ -107,6 +107,7 @@
    
 </select>
 
+
 	<select id="memberupdateS" resultType="kr.co.itwill.memberSeller.MemberSellerDTO" parameterType="String">
 		SELECT p_id, p_pw, company, director, licence, com_zipcode, com_addr1, com_addr2, com_tel, com_email, bank, bank_num
 		FROM seller
@@ -128,7 +129,7 @@
 			,bank_num=#{bank_num}
 		WHERE p_id=#{p_id}
 	</update>
-	
+
 <update id="answerupdate" parameterType="kr.co.itwill.Answer.AnswerDTO">
 	UPDATE answer
 	SET content = #{content}

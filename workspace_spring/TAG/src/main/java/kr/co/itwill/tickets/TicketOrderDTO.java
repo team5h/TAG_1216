@@ -15,7 +15,7 @@ public class TicketOrderDTO {
 	private String msg;
 	private String stus;
 	private String dis_descrip;
-	
+	 
 
 	public TicketOrderDTO() {}
 

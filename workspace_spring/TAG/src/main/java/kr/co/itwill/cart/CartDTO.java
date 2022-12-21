@@ -1,5 +1,7 @@
 package kr.co.itwill.cart;
 
+import java.util.List;
+
 public class CartDTO {
 
     private int cart_no;
@@ -8,8 +10,15 @@ public class CartDTO {
     private int cnt;
     
     
+    private List chkList;
+    
+    
+    
     public CartDTO() {}
 
+
+    
+ 
 
 	public int getCart_no() {
 		return cart_no;
@@ -50,11 +59,27 @@ public class CartDTO {
 		this.cnt = cnt;
 	}
 
+	public List getChkList() {
+		return chkList;
+	}
+
+
+	public void setChkList(List chkList) {
+		this.chkList = chkList;
+	}
+
+
+
+
 
 	@Override
 	public String toString() {
-		return "CartDTO [cart_no=" + cart_no + ", m_id=" + m_id + ", pro_no=" + pro_no + ", cnt=" + cnt + "]";
+		return "CartDTO [cart_no=" + cart_no + ", m_id=" + m_id + ", pro_no=" + pro_no + ", cnt=" + cnt + ", chkList="
+				+ chkList + "]";
 	}
+
+
+	
     
     
 }//class end

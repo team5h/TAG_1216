@@ -13,7 +13,6 @@
 		WHERE p_id = #{p_id} AND p_pw = #{p_pw} AND mem_grade IN ('B', 'S')
 	</select>
 	
-	
 	<!-- [로그인] 아이디 중복 체크 -->
 	<select id="idCheckS" parameterType="String" resultType="int">
 		SELECT COUNT(p_id) 
