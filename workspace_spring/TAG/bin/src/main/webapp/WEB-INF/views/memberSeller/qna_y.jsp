@@ -77,42 +77,45 @@
 		<tr class="qnadetail" id="qnadetail${row.q_no}" style="display:none;">
 			<td>
 				<div style="background-color:#f8f8f8; width: 100%; height: 400px; text-align: left; padding: 25px 25px 25px 25px; margin-bottom: -2px;">
-					<p style="font-weight: bold; font-size:15px; color:black; margin-bottom:0;"> Q.&nbsp;</p> 
-					<div style="padding-left:30px; width:100%; height: 150px; overflow: auto">
-						${row.edit}
-					</div>
 					
+					<div id="q" style="width:100%; height: 150px;">
+						<span style="font-weight: bold; font-size:15px; color:black; margin-bottom:0;"> Q.&nbsp;</span> 
+						<div style="float: right; width: 95%; height:100%; overflow: auto; display: inline-block;">
+							${row.edit}
+						</div>
+					</div><!-- q -->
 					<hr>
 					
-					<p style="font-weight: bold; font-size:15px; color:black; margin-bottom:0;"> A.&nbsp;</p> 
-			<form id="answerupdate${row.a_no}">	
-			<input type="hidden" name="a_no" value="${row.a_no}">
-					<div style="padding-left:30px; text-align: center;">
-						<textarea name="content" id="content${row.a_no}" style="width:100%; border:none; height:100px;
-														background-color: transparent; font-size:14px; resize: none;" 
-							      placeholder="내용을 입력해주세요." disabled>${row.content}</textarea>
-							      
-						<span style="font-size:12px; width: 200px; font-weight: 200; float: right; text-align: right; margin: 0 0 0 0; color: #909090;">
-							<fmt:parseDate var="dateString" value="${row.answerdate}" pattern="yyyy-MM-dd HH:mm:ss" />
-							<fmt:formatDate value="${dateString}" pattern="yyyy.MM.dd HH시 mm분" /></p>
-						</span>
-										
-						<button type="button" id="updatebtn${row.a_no}" class="btn btn-outline-black btn-sm" value="${row.a_no}" onclick="updatebtn(this)"
-								style=" margin-top: 3px; width: 50px; padding: 2px 2px 2px 2px; font-weight: 400; font-size: 10px; margin-left: 150px;">
-							수정
-						</button>
-						
-						<button type="button" id="savebtn${row.a_no}" class="btn btn-outline-black btn-sm" value="${row.a_no}" onclick="answersave(this)" 
-								style="display:none;  width: 50px; padding: 2px 2px 2px 2px; font-weight: 400; font-size: 10px; margin-left: 150px;">
-							저장
-						</button>
-						<button type="reset" id="resetbtn${row.a_no}" class="btn btn-outline-black btn-sm" 
-								style="display:none;  width: 50px; padding: 2px 2px 2px 2px; font-weight: 400; font-size: 10px;">
-							취소
-						</button>
-					</div>
-			</form>			
-					
+					<div id="ans" style="width:100%;">
+						<span style="font-weight: bold; font-size:15px; color:black; margin-bottom:0;"> A.&nbsp;</span> 
+					<form id="answerupdate${row.a_no}">	
+					<input type="hidden" name="a_no" value="${row.a_no}">
+							<div style="width:95%; text-align: center; float: right; display: inline-block; margin-top: -20px;">
+								<textarea name="content" id="content${row.a_no}" style="width:100%; border:none; height:150px;
+																background-color: transparent; font-size:14px; resize: none;" 
+									      placeholder="내용을 입력해주세요." disabled>${row.content}</textarea>
+									      
+								<span style="font-size:12px; width: 200px; font-weight: 200; float: right; text-align: right; margin: 10px 0 0 0; color: #909090;">
+									<fmt:parseDate var="dateString" value="${row.answerdate}" pattern="yyyy-MM-dd HH:mm:ss" />
+									<fmt:formatDate value="${dateString}" pattern="yyyy.MM.dd HH시 mm분" /></p>
+								</span>
+												
+								<button type="button" id="updatebtn${row.a_no}" class="btn btn-outline-black btn-sm" value="${row.a_no}" onclick="updatebtn(this)"
+										style=" margin-top: 3px; width: 50px; padding: 2px 2px 2px 2px; margin-top: 10px; font-weight: 400; font-size: 10px; margin-left: 150px;">
+									수정
+								</button>
+								
+								<button type="button" id="savebtn${row.a_no}" class="btn btn-outline-black btn-sm" value="${row.a_no}" onclick="answersave(this)" 
+										style="display:none;  width: 50px; padding: 2px 2px 2px 2px; margin-top: 10px; font-weight: 400; font-size: 10px; margin-left: 150px;">
+									저장
+								</button>
+								<button type="reset" id="resetbtn${row.a_no}" class="btn btn-outline-black btn-sm" 
+										style="display:none;  width: 50px; padding: 2px 2px 2px 2px; margin-top: 10px; font-weight: 400; font-size: 10px;">
+									취소
+								</button>
+							</div>
+					</form>			
+					</div><!-- ans -->
 				</div>
 			</td>
 		</tr>

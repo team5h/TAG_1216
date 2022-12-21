@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +44,8 @@ public class MylikeCont {
 		List<MylikeDTO> list=mylikeDao.list(s_m_id);
 		mav.addObject("list", list);
 		
-		List<Map<String, String>> list_c=mylikeDao.list_c(s_m_id);
-		mav.addObject("list_c", list_c);
+		List<Map<String, String>> like_c=mylikeDao.like_c(s_m_id);
+		mav.addObject("like_c", like_c);
 		
 		
 		//공연 이미지만 추출하기
@@ -93,8 +94,8 @@ public class MylikeCont {
 		//-------------------------------------------------------------------------
 		
 		
-		List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
-		mav.addObject("list_p", list_p);
+		List<Map<String, String>> like_p=mylikeDao.like_p(s_m_id);
+		mav.addObject("like_p", like_p);
 		
 		int conCnt=mylikeDao.conCnt(s_m_id);
 		mav.addObject("conCnt", conCnt);
@@ -107,43 +108,117 @@ public class MylikeCont {
 	}//list() end
 	
 	
-	@RequestMapping("mypage/mylike/all")
-	public ModelAndView all(HttpSession session) {
+	@RequestMapping("mypage/mylike/all_c")
+	public ModelAndView all_c(HttpSession session, HttpServletRequest req) {
 		String s_m_id=(String)session.getAttribute("s_m_id");
 		
 		ModelAndView mav=new ModelAndView();
-		mav.setViewName("mypage/all");
+		mav.setViewName("mypage/all_c");
 		
+		//페이징 시작
+		int totalRowCount = mylikeDao.conCnt(s_m_id);
+		mav.addObject("conCnt", totalRowCount);
+		// 페이징 파트
+        int numPerPage = 12; // 한 페이지당 레코드(글) 개수
+        int pagePerBlock = 5; // 페이지 리스트 (블럭당 페이지 수)
+
+        // 현재 페이지 번호 (문자형)
+        String pageNum = req.getParameter("pageNum");
+        //System.out.println(pageNum);
+        
+        if (pageNum == null) {
+            pageNum = "1";
+        }// if end
+
+        int currentPage = Integer.parseInt(pageNum);
+        int startRow = (currentPage - 1) * numPerPage + 1;
+        int endRow = currentPage * numPerPage;
+        double totcnt = (double) totalRowCount / numPerPage;
+        int totalPage = (int) Math.ceil(totcnt);
+        double d_page = (double) currentPage / pagePerBlock;
+        int Pages = (int)Math.ceil(d_page)-1;
+        int startPage = Pages * pagePerBlock+1;
+        int endPage = startPage + pagePerBlock-1;
+		
+		
+        List<Map<String, Object>> list = null;
+        if (totalRowCount > 0) {
+    		list = mylikeDao.list_c(s_m_id, startRow, endRow);
+    		mav.addObject("list_c", list);
+     	    mav.addObject("total", totalRowCount);
+            mav.addObject("pageNum", currentPage);
+            mav.addObject("count", totalRowCount);
+            mav.addObject("totalPage", totalPage);
+            mav.addObject("startPage", startPage);
+            mav.addObject("endPage", endPage);
+        } else {
+            System.out.println("페이지 불러오기 실패");
+        }// if end
+		
+		/*
 		List<Map<String, String>> list_c=mylikeDao.list_c(s_m_id);
 		mav.addObject("list_c", list_c);
 		
 		List<Map<String, String>> list_p=mylikeDao.list_p(s_m_id);
 		mav.addObject("list_p", list_p);
+		*/
 		
 		return mav;
-	}//all() end
+		
+	}//all_c() end
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	@RequestMapping("mypage/mylike/all_p")
+	public ModelAndView all_p(HttpSession session, HttpServletRequest req) {
+		String s_m_id=(String)session.getAttribute("s_m_id");
+		
+		ModelAndView mav=new ModelAndView();
+		mav.setViewName("mypage/all_p");
+		
+		//페이징 시작
+		int totalRowCount = mylikeDao.proCnt(s_m_id);
+		mav.addObject("proCnt", totalRowCount);
+		// 페이징 파트
+        int numPerPage = 12; // 한 페이지당 레코드(글) 개수
+        int pagePerBlock = 5; // 페이지 리스트 (블럭당 페이지 수)
+
+        // 현재 페이지 번호 (문자형)
+        String pageNum = req.getParameter("pageNum");
+        //System.out.println(pageNum);
+        
+        if (pageNum == null) {
+            pageNum = "1";
+        }// if end
+
+        int currentPage = Integer.parseInt(pageNum);
+        int startRow = (currentPage - 1) * numPerPage + 1;
+        int endRow = currentPage * numPerPage;
+        double totcnt = (double) totalRowCount / numPerPage;
+        int totalPage = (int) Math.ceil(totcnt);
+        double d_page = (double) currentPage / pagePerBlock;
+        int Pages = (int)Math.ceil(d_page)-1;
+        int startPage = Pages * pagePerBlock+1;
+        int endPage = startPage + pagePerBlock-1;
+		
+		
+        List<Map<String, Object>> list = null;
+        if (totalRowCount > 0) {
+    		list = mylikeDao.list_p(s_m_id, startRow, endRow);
+    		//System.out.println(list);
+    		mav.addObject("list_p", list);
+     	    mav.addObject("total", totalRowCount);
+            mav.addObject("pageNum", currentPage);
+            mav.addObject("count", totalRowCount);
+            mav.addObject("totalPage", totalPage);
+            mav.addObject("startPage", startPage);
+            mav.addObject("endPage", endPage);
+        } else {
+            System.out.println("상품 좋아요 상세보기///페이지 불러오기 실패");
+        }// if end
+		
+		return mav;
+		
+	}//all_p() end
+		
 	
 }//class end

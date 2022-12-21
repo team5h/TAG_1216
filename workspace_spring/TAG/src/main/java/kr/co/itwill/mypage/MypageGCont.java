@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import kr.co.itwill.QnA.QnADTO;
 import kr.co.itwill.coupon.CouponDAO;
 import kr.co.itwill.myproduct.MyproductDAO;
 import kr.co.itwill.myproduct.MyproductDTO;
@@ -63,5 +64,26 @@ public class MypageGCont {
 		return mav;
 		
 	}//mypage() end
+	
+	
+	@RequestMapping("/mypage/myqna")
+	public ModelAndView myqna(HttpSession session) {
+		String s_m_id=(String)session.getAttribute("s_m_id");
 		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("/mypage/myqna");
+		
+		List<Map<String, Object>> myqna = mypageGDao.myqna(s_m_id);
+		mav.addObject("myqna", myqna);
+		
+		List<Map<String, Object>> notAyet = mypageGDao.notAyet(s_m_id);
+		mav.addObject("notAyet", notAyet);
+		
+		return mav;
+		
+	}//myqna() end
+	
+	
+	
+	
 }//class end

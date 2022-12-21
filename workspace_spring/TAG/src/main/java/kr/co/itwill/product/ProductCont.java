@@ -1,5 +1,7 @@
  package kr.co.itwill.product;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +24,8 @@ import org.springframework.web.servlet.ModelAndView;
 import kr.co.itwill.QnA.QnADTO;
 
 import kr.co.itwill.concert.ConcertDTO;
+import kr.co.itwill.orderDetail.OrderDetailDTO;
+import kr.co.itwill.productOrder.ProdcutOrderDTO;
 
 @Controller
 public class ProductCont {
@@ -32,7 +36,6 @@ public class ProductCont {
 	
 	@Autowired
 	ProductDAO productDao;
-	
 	
 	
 //  [상품리스트 - 전체보기] 시작 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  //
@@ -269,12 +272,100 @@ public class ProductCont {
 	//order - payment
 	
 	@RequestMapping("/product/order")
-	public ModelAndView order(){
+	public ModelAndView order(int pro_no, String m_id, int buystock){
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("/product/order");
 		
+		mav.addObject("order_proinfo",productDao.order_proinfo(pro_no));		// 상품정보
+		mav.addObject("order_Minfo",productDao.order_Minfo(m_id));				// 구매자
+		mav.addObject("buystock",buystock);										// 구매 수량
+		mav.addObject("mem_coupon",productDao.mem_coupon(pro_no, m_id));		// 구매자 해당 상품에 사용 가능 쿠폰리스트 
+		mav.addObject("mem_couponCNT",productDao.mem_couponCNT(pro_no,m_id));	// 구매자 해당 상품에 사용 가능한 쿠폰 수량
+		mav.addObject("mem_couponTOTALCNT",productDao.mem_couponTOTALCNT(m_id));// 구매자 사용 가능 쿠폰 총 수량
+
 		return mav;
-	}
+	}//end
+	
+	@RequestMapping("/product/orderProc")
+	public ModelAndView orderSucc ( //@RequestParam Map<String, Object> map
+									@ModelAttribute OrderDetailDTO dto
+									, HttpServletRequest req 
+								    , HttpSession session) throws Exception {
+		//System.out.println("--");
+		
+		ModelAndView mav = new ModelAndView();
+		
+		String m_id=(String)session.getAttribute("s_m_id");
+
+		if(m_id!=null) { //session아이디를 불러왔다면
+			
+			Map<String, Object> map = new HashMap<>();
+			
+			//order_num
+			//주문서 일련번호 만들기
+			//현재 날짜+시간
+			LocalDateTime now = LocalDateTime.now();
+			//System.out.println(now); //2022-12-13T11:34:14.726128
+			//포맷팅
+			String formatedIssueDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	        String formatedNow = now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmssSS"));
+			//System.out.println(formatedNow); //20221213-14233419
+	        //dto.setOrder_num(formatedNow);
+
+	        map.put("order_num", formatedNow);
+
+	        if (Integer.parseInt(req.getParameter("cp_no")) == 0) {
+	        	
+	        }else {
+	        	map.put("cp_no", req.getParameter("cp_no"));
+	        }
+	        
+	        // ProductOrder
+	        map.put("m_id", m_id);
+	        map.put("order_price", req.getParameter("order_price"));
+	        map.put("cp_dis", req.getParameter("cp_dis"));
+	        map.put("pt_minus", req.getParameter("pt_minus"));
+	        map.put("d_fee", req.getParameter("d_fee"));
+	        map.put("total_price", req.getParameter("total_price"));
+	        map.put("rec_name", req.getParameter("rec_name"));
+	        map.put("rec_tel", req.getParameter("rec_tel"));
+	        map.put("rec_addr1", req.getParameter("rec_addr1"));
+	        map.put("rec_addr2", req.getParameter("rec_addr2"));
+	        map.put("rec_zipcode", req.getParameter("rec_zipcode"));
+	        map.put("msg", req.getParameter("msg"));
+	        map.put("pt_plus", req.getParameter("pt_plus"));
+	        
+			int cnt = productDao.productorderIns(map);
+			//System.out.println(cnt);
+
+			// OrderDetail
+			dto.setOrder_num(formatedNow);
+			
+			int org_price = Integer.parseInt(req.getParameter("order_price"));
+			int pricesum = org_price - Integer.parseInt(req.getParameter("discount"));
+			dto.setOrg_price(org_price);
+			dto.setPricesum(pricesum);
+			
+			int cnt2 = productDao.orderdetailIns(dto);
+			//System.out.println(cnt2);
+			
+			
+			// PointDetail
+			
+			
+			
+			mav.setViewName("/product/orderSucc");
+			
+			return mav;
+		}else { //session아이디를 불러오지 못했다면
+			mav.setViewName("/memberGeneral/alert"); //알림페이지로 이동
+			mav.addObject("msg", "로그인이 필요합니다");
+			mav.addObject("url", "/loginForm"); //로그인 폼 url명령어 입력
+			
+			return mav;
+		}
+	}//end
+	
 	
 }//class end
 

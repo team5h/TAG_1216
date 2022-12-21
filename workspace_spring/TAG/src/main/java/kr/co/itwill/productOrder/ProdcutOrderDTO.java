@@ -12,7 +12,9 @@ public class ProdcutOrderDTO {
     private int total_price;    	  
     private int pt_plus;           
     private String rec_name;               
-    private String rec_addr;                     
+    private String rec_zipcode;      
+    private String rec_addr1; 
+    private String rec_addr2; 
     private String rec_tel;                           
     private String msg;                               
 		    
@@ -22,8 +24,7 @@ public class ProdcutOrderDTO {
     
     //
     public ProdcutOrderDTO() {}
-    
-    //
+
 	public String getOrder_num() {
 		return order_num;
 	}
@@ -104,12 +105,28 @@ public class ProdcutOrderDTO {
 		this.rec_name = rec_name;
 	}
 
-	public String getRec_addr() {
-		return rec_addr;
+	public String getRec_zipcode() {
+		return rec_zipcode;
 	}
 
-	public void setRec_addr(String rec_addr) {
-		this.rec_addr = rec_addr;
+	public void setRec_zipcode(String rec_zipcode) {
+		this.rec_zipcode = rec_zipcode;
+	}
+
+	public String getRec_addr1() {
+		return rec_addr1;
+	}
+
+	public void setRec_addr1(String rec_addr1) {
+		this.rec_addr1 = rec_addr1;
+	}
+
+	public String getRec_addr2() {
+		return rec_addr2;
+	}
+
+	public void setRec_addr2(String rec_addr2) {
+		this.rec_addr2 = rec_addr2;
 	}
 
 	public String getRec_tel() {
@@ -127,7 +144,6 @@ public class ProdcutOrderDTO {
 	public void setMsg(String msg) {
 		this.msg = msg;
 	}
-
 
 	public int getTotal_cnt() {
 		return total_cnt;
@@ -152,19 +168,16 @@ public class ProdcutOrderDTO {
 	public void setP_id(String p_id) {
 		this.p_id = p_id;
 	}
-	
-	//
+
 	@Override
 	public String toString() {
 		return "ProdcutOrderDTO [order_num=" + order_num + ", m_id=" + m_id + ", order_price=" + order_price
 				+ ", cp_dis=" + cp_dis + ", cp_no=" + cp_no + ", pt_minus=" + pt_minus + ", d_fee=" + d_fee
-				+ ", total_price=" + total_price + ", pt_plus=" + pt_plus + ", rec_name=" + rec_name + ", rec_addr="
-				+ rec_addr + ", rec_tel=" + rec_tel + ", msg=" + msg + ", total_cnt=" + total_cnt + ", order_date="
-				+ order_date + ", p_id=" + p_id + "]";
+				+ ", total_price=" + total_price + ", pt_plus=" + pt_plus + ", rec_name=" + rec_name + ", rec_zipcode="
+				+ rec_zipcode + ", rec_addr1=" + rec_addr1 + ", rec_addr2=" + rec_addr2 + ", rec_tel=" + rec_tel
+				+ ", msg=" + msg + ", total_cnt=" + total_cnt + ", order_date=" + order_date + ", p_id=" + p_id + "]";
 	}
-	
-	
-	
+    
 	
     
     

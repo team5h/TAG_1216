@@ -246,7 +246,7 @@
       $('#summernote').summernote({
         //placeholder: 'Hello Bootstrap 4',
         tabsize: 2,
-        height: 400,
+        height: 700,
         focus: true,
         toolbar: [
 		    // [groupName, [list of button]]
@@ -279,7 +279,7 @@
 			}
 		}//callback end 
 	});//end
-	
+
 	// 이미지업로드로직
 	function uploadSummernoteImageFile(file, editor) {
 		var data = new FormData();

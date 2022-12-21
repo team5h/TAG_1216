@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.co.itwill.QnA.QnADTO;
 import kr.co.itwill.myproduct.MyproductDTO;
 
 @Repository
@@ -42,5 +43,13 @@ public class MypageGDAO {
 	public int ptTotal(String s_m_id) {
 		return sqlSession.selectOne("mypageG.ptTotal", s_m_id);
 	}//tckCount() end
+	
+	public List<Map<String, Object>> myqna(String s_m_id){
+		return sqlSession.selectList("mypageG.myqna", s_m_id);
+	}//myqna() end
+	
+	public List<Map<String, Object>> notAyet(String s_m_id){
+		return sqlSession.selectList("mypageG.notAyet", s_m_id);
+	}//notAyet() end
 	
 }//class end
