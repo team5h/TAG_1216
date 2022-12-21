@@ -297,6 +297,7 @@ line-height : 10px;
 								<div class="heart-icon"> 
 										<img id="heart" src="/images/heart-192x192_1.svg"/>
 									<span id="likecntUpdate">${concert.likecnt}</span>
+								</div>
 						</td>	
 						
 						
@@ -595,7 +596,6 @@ $(document).ready(function(){
 	var heartFilled = likechk; //좋아요:1 안좋아요:0
 
 	$("#heart").click(function(){
-		alert("g");
 		// [로그인 확인] if start
 		if(${s_m_id == null}){ // 로그인 X
 			alert("로그인 후 이용가능합니다.");
@@ -655,11 +655,6 @@ $(document).ready(function(){
 				//alert("데이터 들어오기 성공!" + data);
 				if(data==1){
 					$("#heart").prop("src", "/images/heart-192x192_2.svg");
-					
-					// 문제점
-					// 1. 새로고침하면 컬러가 다시 바뀜.
-					// 2. 숫자가 실시간으로 안바뀜. (새로고침 해야 바뀜)
-					
 				}else {
 					$("#heart").prop("src", "/images/heart-192x192_1.svg");
 				}//(data==1) end
