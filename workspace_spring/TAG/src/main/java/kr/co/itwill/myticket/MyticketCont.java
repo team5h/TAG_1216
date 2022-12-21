@@ -128,6 +128,8 @@ public class MyticketCont {
 		
 
 		int cntDetail = myticketDao.deleteDetail(tck_num);
+		int cntOrder = myticketDao.deleteOrder(tck_num);
+		
 		/*
 		if(cntDetail >= 1 ) {
 			System.out.println("티켓주문상세서 삭제 완료");
@@ -135,7 +137,6 @@ public class MyticketCont {
 			System.out.println("티켓주문상세서 삭제 실패");
 		}
 		
-		int cntOrder = myticketDao.deleteOrder(tck_num);
 		if(cntOrder == 1 ) {
 			System.out.println("티켓주문서 삭제 완료");
 		}else {
