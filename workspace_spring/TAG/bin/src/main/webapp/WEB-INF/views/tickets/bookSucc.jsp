@@ -9,7 +9,57 @@
 <!-- 본문영역 -->
 
 <style>
-table{border-collapse:collapse;}
+
+/* 전체 가로 너비 */
+.container {max-width: 1350px; !important;} 
+
+/* 상품 테이블 전체박스 */
+#product_box {
+  width: 355px;
+  padding: 0 25px 0 25px;
+  --padding-right: 50px;
+  padding-bottom: 70px;
+}
+
+
+/* 좋아요, 카트 hover 되면 보이게 */
+#cart{display: none;}
+
+
+/* 상품마다 밑에 라인넣기 */
+#list_line{
+  padding-top: 28px;
+  border-bottom: 1px solid black;
+}
+
+/* 상품 이름 밑에 여백주기 */
+#product_price{margin-top: 3px;}
+
+
+/* 바디 전체 폰트 설정 */
+body {
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 0.25px;
+}
+
+/* 링크 컬러 */
+a{color: black; !important;}
+
+/* 상품명 위에 공연명 */
+#concert_name {
+  font-size: 13px;
+  margin-bottom: 3px;
+  font-weight: 300;
+}
+
+/* 상품명 */
+#product_name{font-size: 18px;}
+
+
+table{
+border-collapse:collapse; 
+margin-left:auto; 
+margin-right:auto;}
 
 /* 상품 테이블 전체박스 */
 #product_box {
@@ -51,7 +101,6 @@ border: none;
 border-bottom: 2px solid black;
 }
 
-   
 img{
 object-fit: contain;
 }
@@ -69,6 +118,26 @@ border-radius: 20px 20px 20px 20px;
 }
 
 
+.couponBc, .couponEBc{
+display:inline-block; 
+background-image: url('/images/Bc.png'); 
+background-size:contain; 
+box-shadow: 0 8px 18px -7px rgba(0,0,0,1); 
+height:300px; 
+width:600px; 
+margin:50px 0 100px 0; 
+padding:0; 
+text-align:right; 
+}
+
+.concertName{text-align:right; font-size:16px; margin: 20px 20px; font-weight: bold; padding-left:400px;}
+
+.dateOfIssue{text-align:right; font-size:14px; margin: 170px 20px 0; font-weight: bold;}
+
+.EXP{text-align:right; font-size:14px; margin: 0 20px; font-weight: bold;}
+
+   
+
 </style>
 
 
@@ -85,14 +154,26 @@ border-radius: 20px 20px 20px 20px;
 		</p>
 		<p>
 			${content2}
-			${couponDetail.issue_date}
+			${couponDetail.coupon}
 		</p>
 	</div>
-	<div class="couponArea" style="display:inline-block; background-image: url('/images/Bc.png'); background-size:contain; box-shadow: 0 8px 18px -7px rgba(0,0,0,1); height:300px; width:600px; margin:50px 0 100px 0; padding:0; text-align:left; ">
-		<p class="concertName">${couponDetail.c_no}</p>
-		<p class="dateOfIssue">Date of Issue : ${couponDetail.issue_date}</p>
-		<p class="EXP">EXP : ${couponDetail.exp_date}</p>
-	</div><!-- couponArea end -->
+	
+	<c:choose>
+		<c:when test="${couponDetail.coupon eq 'Bc'}">
+			<div class="couponBc" style="">
+				<p class="concertName">${concertTitle}</p>
+				<p class="dateOfIssue">Date of Issue : ${couponDetail.issue_date}</p>
+				<p class="EXP">EXP : ${couponDetail.exp_date}</p>
+			</div><!-- Bc couponArea end -->
+		</c:when>
+		<c:when test="${couponDetail.coupon eq 'EBc'}">
+			<div class="couponEBc" style="display:inline-block; background-image: url('/images/EBc.png'); background-size:contain; box-shadow: 0 8px 18px -7px rgba(0,0,0,1); height:300px; width:600px; margin:50px 0 100px 0; padding:0; text-align:left; ">
+				<p class="concertName">${concertTitle}</p>
+				<p class="dateOfIssue">Date of Issue : ${couponDetail.issue_date}</p>
+				<p class="EXP">EXP : ${couponDetail.exp_date}</p>
+			</div><!-- EBc couponArea end -->		
+		</c:when>
+	</c:choose>
 </div>
 
 
@@ -100,11 +181,10 @@ border-radius: 20px 20px 20px 20px;
 <table>
 	<tr style="border-bottom:1px solid;">
 		<td colspan='3' style="margin:30px; padding-bottom:10px;">
-			<a href="/listConcert?c_no=${couponDetail.c_no}">${couponDetail.c_no} 관련된 굿즈</a>
+			<a href="/listConcert?c_no=${couponDetail.c_no}">${concertTitle} 관련된 굿즈</a>
 		</td>
 	</tr>
 	<tr>
-		<div>
 			<!-- varStatus 상태용 변수 -->
 			<c:forEach items="${list}" var="row" varStatus="vs">
 			<a href="detail/${row.pro_no}">
@@ -197,12 +277,11 @@ border-radius: 20px 20px 20px 20px;
 				<tr><tr>
 			</c:if>
 			</c:forEach>
-			</div>
 	</tr>
 	<tr>
 		<td colspan='3' style="text-align:right;">
 			<!-- 공연별 상품 페이지 링크 -->
-			<a class="goProductBtn" href="/listConcert?c_no=${couponDetail.c_no}">할인대상 굿즈 보러가기</a>
+			<a class="goProductBtn" href="/listConcert?c_no=${couponDetail.c_no}">할인대상 굿즈 더 보러가기</a>
 		</td>
 	</tr>
 </table>

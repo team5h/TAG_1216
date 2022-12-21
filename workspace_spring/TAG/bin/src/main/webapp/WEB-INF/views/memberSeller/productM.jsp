@@ -6,7 +6,6 @@
 
 <!-- 본문영역 -->
 
-
 <br>
 	<h1 class="saem_title"> <a href="/mypageS" style="color:black" class="saem_title"> MY PAGE </a> </h1>
 <br> 

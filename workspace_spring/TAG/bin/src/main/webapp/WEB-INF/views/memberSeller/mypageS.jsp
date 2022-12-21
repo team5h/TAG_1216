@@ -9,7 +9,7 @@
 	<h1 class="saem_title"> <a href="/mypageS" style="color:black" class="saem_title"> MY PAGE </a> </h1>
 <br> 
 
-<div class="float" style="width: 100%; height: 100%; flex: 1;">
+<div class="float" style="width: 100%; height: 100%; flex: 1 1 1px; ">
 <div class="leftcontent" style="float:left; width:15%; margin-right:5%;">
 	<div class="stickyP" style="height: 100%;">
 			<p style="font-size: 20px; font-weight: 500;" class="fontG">
@@ -29,7 +29,7 @@
 					<li>&nbsp;<a href="/mypageS/qna" style="color:black; font-size: 12px;" class="fontS"> - 답변대기 &nbsp;</a></li>
 					<li>&nbsp;<a href="/mypageS/answer" style="color:black; font-size: 12px;" class="fontS"> - 답변완료 &nbsp;</a></li>
 		<br>			
-				<li style="font-size: 12px; font-weight: 400; color: #bcbcbc;" class="fontS"> <a> 회원정보수정 </a> </li>
+				<li style="font-size: 12px; font-weight: 400; color: #bcbcbc;" class="fontS"> <a href="/mypageS/update"> 회원정보수정 </a> </li>
 			</ul>
 		</div><!-- stickyC -->
 	 </div><!-- stickyP -->

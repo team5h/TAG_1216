@@ -11,7 +11,7 @@
 	<select id="select"  resultType="String" parameterType="kr.co.itwill.memberGeneral.MemberGeneralDTO" >
 		SELECT mem_grade
 		FROM member
-		WHERE m_id = #{m_id} AND m_pw = #{m_pw} AND mem_grade IN ('B', 'S')
+		WHERE m_id = #{m_id} AND m_pw = #{m_pw} AND mem_grade IN ('B', 'S', 'M')
 	</select>
 	
 	
@@ -35,7 +35,7 @@
 	<insert id="joinG" parameterType="kr.co.itwill.memberGeneral.MemberGeneralDTO">
 		INSERT INTO member (m_id, m_pw, m_name, nickname, birth, gender, m_zipcode, m_addr1, m_addr2, m_tel, m_email, mem_grade, point, regdate)
 		VALUES (
-				 #{m_id}
+				  #{m_id}
 				 ,#{m_pw}
 				 ,#{m_name}
 				 ,#{nickname}
@@ -52,6 +52,7 @@
 				)
 	</insert>
 	
+	
 	<select id="memberupdateG" resultType="kr.co.itwill.memberGeneral.MemberGeneralDTO" parameterType="String">
 		select m_id, m_pw, m_name, nickname, birth, gender, m_zipcode, m_addr1, m_addr2, m_tel, m_email, mem_grade, point, regdate
 		from member
@@ -60,7 +61,7 @@
 	
 	<update id="memberupdateGproc" parameterType="kr.co.itwill.memberGeneral.MemberGeneralDTO">
 		UPDATE member
-		SET m_pw=#{m_pw}
+		SET  m_pw=#{m_pw}
 			,m_name=#{m_name}
 			,nickname=#{nickname}
 			,gender=#{gender}
