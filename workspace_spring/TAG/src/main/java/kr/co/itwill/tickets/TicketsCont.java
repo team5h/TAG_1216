@@ -126,13 +126,15 @@ public class TicketsCont {
 		
 		//선예매 여부 받아오기
 		int earlybird= Integer.parseInt(req.getParameter("earlybird"));
-		//System.out.println("testEarlybird : "+earlybird); //0:선예매x 1:선예매o
-		
+		System.out.println("testEarlybird : "+earlybird); //0:선예매x 1:선예매o
+		/* 얼리버드 강선님적용후 가져오기
 		if(earlybird == 0) {
 			coupDto.setCoupon("Bc"); //일반예매 할인
 		}else if(earlybird == 1) {
 			coupDto.setCoupon("EBc"); //얼리버드 할인
 		}//if end
+		*/
+		coupDto.setCoupon("Bc"); //얼리버드 할인
 		
 		int cnt3 = ticketOrderDao.addCoupon(coupDto);
 		if(cnt3 == 1) {

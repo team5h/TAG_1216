@@ -14,9 +14,8 @@
 	
 	.rightcontent {
 		float: right;
-		width: 75%;
-		height: 100%;	
-		position: relative;	
+		width: 80%;
+		height: 100%;		
 	}
 
 	.leftcontent, .box {
@@ -47,7 +46,7 @@
 	}
 	
 	.myticketDetail{
-		position:absolute;
+	
 	}
 	
 	.myticketDetail ol{
@@ -169,7 +168,6 @@
 </div><!-- leftcontent end -->
 
 
-
 <div class="rightcontent">
 	<div class="myticketDetail">
 		<div class="product-image">
@@ -252,16 +250,8 @@
 				</c:when>
 				<c:otherwise>
 					<tr>
-						<th>우편번호</th>
-						<td>${detail.rec_zipcode}</td>
-					</tr>
-					<tr>
-						<th>주소</th>
-						<td>${detail.rec_addr1}</td>
-					</tr>
-					<tr>
-						<th>상세주소</th>
-						<td>${detail.rec_addr2}</td>
+						<th>받는주소</th>
+						<td>${detail.rec_addr}</td>
 					</tr>
 					<tr>
 						<th class="paddingBottom">배송메세지</th>
